@@ -187,6 +187,8 @@ def cli():
 
 
 def install():
+    from ugs_manifest_validation_v1 import install as install_manifest_validation
+    install_manifest_validation()
     if getattr(core, "_ugs_control_installed", False):
         return
     core.scoped = scoped

@@ -1,0 +1,12 @@
+{
+  "change": "Reject invalid submission_version consistently in validation and idempotency lookup",
+  "runtime_release": "ugs-exec-v3.1",
+  "controller_revision": "ugs-control-v2",
+  "cpu_regression_tests": 4,
+  "live_cli_checks": 2,
+  "files": {
+    "source/ugs_control_v2.py": "f35f714fcb4dd3d2937b465a5faa182e4ca87f3eb3f42687037eec4d0a0028c3",
+    "source/ugs_manifest_validation_v1.py": "fd230b975275219b00a6de4cb51b47ba0b6f9dbade5fc3beda87c27b32ea4181",
+    "source/test_manifest_validation_v1.py": "5c8daa80cf6e932b5e32df2b1ba80ca1f40c260bad444753bf8c6a309ca4e299"
+  }
+}

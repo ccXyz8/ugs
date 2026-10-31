@@ -32,3 +32,5 @@ protocol-v2.md是执行器读取的协议文件，与GPU_SCHEDULER_PROTOCOL.md�
 最终48项CPU验收通过，含真实进程回收、正常结束GPU上下文残留等待、空卡基础显存复核、未知查询保留名额、异常写入仍清理和成功回执不能隐藏遗留worker。服务器证据acceptance/cpu-v3-2cc63eff6acf412cb43702029634d6de/result.json；控制发布acceptance/executor-release-control-v2.json；切换/实测acceptance/service-cutover-control-v2.json及control-v2-live-cli.json。回收查询及失败也写入共享GPU观察历史，避免漏记占用。另有仅job-id的真实CPU终止验收及10项生产只读CLI检查通过。现有科学实验没有重启。
 
 中文帮助已同步提交入队与阶段启动的区别、项目/全局暂停范围及STARTING许可边界。36个公开操作的表格/JSON共72项渲染检查、8组实际CLI帮助检查通过。仅更新帮助与发布SHA，不重启协调器或实验；当前帮助清单见releases/help-clarification-source-manifest.json（Git仓库），服务器发布证据acceptance/executor-release-help-clarified.json。
+
+submission_version类型校验修复：控制入口安装ugs_manifest_validation_v1.py，validate与幂等键查询统一拒绝非空字符串以外的值。4项CPU回归（含18组非法类型/操作组合）和2项生产CLI拒绝检查通过，未新增job，既有清单SHA、协调器与并发设置保持。冻结core/verifier/protocol不变，项目无需重新提交或修改PIN。发布证据acceptance/executor-release-manifest-validation-v1.json；新源码SHA见Git仓库releases/manifest-validation-v1-source-manifest.json。

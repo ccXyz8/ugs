@@ -27,3 +27,7 @@ max_experiment只管容量，0不杀实验；停止/暂停/服务启停见USAGE�
 未来后缀amend内部以from-stage为范围执行准入校验。公开validate当前从stage0检验完整链；活动旧前缀没有新合同报告时，不补造或修改旧前缀，使用amend自身的后缀原子校验。
 
 initial登记短竞态允许同adapter PID/nonce内按code3最多10秒有界pending等待；成功许可只能取得一次。preload成功一次后立即启动GPU worker，不重新申请成功许可、不重新创建实验；任何非pending错误直接停止。所有复查写共同观察历史，已知占用/失败使资格失效；超过5秒的GPU查询或最终快照超过2秒不准入。
+
+## submission_version类型约束
+
+submission_version必须是非空字符串，例如JSON中的`"submission_version": "1"`；整数`1`、布尔值、null、数组、对象、空串或纯空白均拒绝。validate与submit/update/amend/retry的幂等键路径使用同一类型检查，返回明确字段错误，不自动转换类型。已有合法字符串、清单SHA、job-id和幂等键保持不变；失败提交不创建实验。
