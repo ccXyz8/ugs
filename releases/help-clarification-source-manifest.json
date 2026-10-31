@@ -1,0 +1,10 @@
+{
+  "change": "Clarify queue submission, stage startup and pause scope in Chinese help",
+  "controller_revision": "ugs-control-v2",
+  "runtime_release": "ugs-exec-v3.1",
+  "render_checks": 72,
+  "live_cli_checks": 8,
+  "files": {
+    "source/ugs_help_zh_v3.py": "8283acbd1a7a0d9e5e48702b59e668dccab37412a9ba949c8cf6249bed7c92e2"
+  }
+}
