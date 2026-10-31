@@ -2,21 +2,27 @@
 
 生效日期：2026-10-31。依据用户最新指令，本页替代旧协议中“单实验必须提供project_id”和“experiment pause/resume”的交互规则，补强正常结束与紧急停止的资源收口要求。公平、FIFO、准入、项目隔离、输出归属与删除边界不变。
 
-## 运行与暂停职责
+## 提交、启动与停止的使用约定
 
-运行阶段继续执行，直到正常结束、失败收口或收到紧急停止；不提供保留GPU显存的实验挂起模式。
+“提交入队”和“启动执行”是两件事：project register登记项目；experiment submit通过校验后创建job-id并加入QUEUED队列；调度器随后按公平、容量、GPU和门禁条件为某个阶段授予启动许可，阶段才会进入STARTING/RUNNING。“后续派发”专指授予新的阶段启动许可，不指接收新提交。
 
-| 操作 | 正在运行的阶段 | 后续派发 | UGS协调器 |
-|---|---|---|---|
-| scheduler pause | 继续执行 | 暂停 | 继续运行 |
-| scheduler pause --stop-running | 终止并回收 | 暂停 | 继续运行 |
-| scheduler stop --stop-running | 终止并回收 | 暂停 | 全部收口后退出 |
-| experiment stop J | 终止指定已开始链并回收 | 全局开关不变，其他队列可补位 | 继续运行 |
-| project stop P | 终止该项目已开始链并回收 | 暂停该项目 | 继续运行 |
+暂停期间仍允许登记项目、校验清单、提交新实验及查询/管理队列。新提交不会因暂停而被拒绝，但对应范围内尚未获得启动许可的实验不能开始运行。暂停也阻止已有实验链的下一个阶段启动，例如训练完成后的验证、验证完成后的测试。当前阶段完成后照常回收进程和显存，不挂起GPU进程等待恢复。
 
-scheduler/project pause、resume保留；experiment pause和resume均删除并拒绝调用。未开始实验用experiment remove J撤回，已开始实验用experiment stop J。历史记录可能保留paused字段，不表示仍提供实验级挂起接口。
+| 操作 | 新实验提交入队 | 尚未获许可的阶段启动 | 已运行阶段 | 协调器 |
+|---|---|---|---|---|
+| ugs project pause P | 允许 | 指定项目禁止，其他项目不受此开关影响 | 继续 | 运行 |
+| ugs scheduler pause | 允许 | 全部禁止 | 继续 | 运行 |
+| ugs scheduler pause --stop-running | 允许 | 全部禁止 | 全部受管实验终止并回收 | 运行 |
+| ugs scheduler stop --stop-running | 允许通过CLI登记入队，但不执行 | 全部禁止 | 全部受管实验终止并回收 | 全部收口后退出 |
+| ugs experiment stop J | 允许 | 不改变项目/全局开关，其他队列可能补位 | 指定已启动链终止并回收 | 运行 |
 
-scheduler stop无--stop-running时仅在无活动名额时允许。max_experiment仍只控制容量，0不发送停止信号；降低正数让已启动有限链完成。所有终态均不自动重启。
+普通pause保留暂停事务之前已授予的启动意图，因此少量已经处于STARTING的阶段仍可能转为RUNNING。需要“从现在起不再启动，连正在启动的也取消”时，使用scheduler pause --stop-running；它在同一事务中关闭后续启动并撤销所有已启动链的许可。之后只要无人执行scheduler resume，就不会有新的实验获准运行。命令返回不等于显存已回收，须检查STOPPING及active_count，确认收口完成。
+
+实验级experiment pause/resume已删除。project pause/resume保留，控制单个项目的新阶段启动；scheduler pause/resume保留，控制所有项目的新阶段启动。二者不是对实验进程发送持久暂停信号。
+
+恢复时：project resume P只解除该项目开关；scheduler resume只解除全局开关，仍须项目未暂停且满足其他准入条件。scheduler start只启动服务，不解除暂停。已失败、取消或结束的实验不会因resume/start自动重启。
+
+max_experiment只控制实验链容量：默认1，0禁止接纳新链但不终止已启动链，也不阻止它们完成有限后续阶段；调高容量不会解除暂停。未启动实验用experiment remove J撤回，已启动实验用experiment stop J终止。单实验--project可选，填写时必须匹配job-id归属；项目agent仍只管理本项目。
 
 ## 单实验使用job-id
 

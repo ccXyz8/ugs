@@ -22,6 +22,28 @@ ugs --help提供全部36个公开操作、逐项参数、默认值及常用功�
 
 -h同--help，ugs不带参数显示总览。帮助只读，不查GPU、不操作队列、不启停进程；即使带--stop-running或--all，遇到--help也只显示说明。指令说明包括用途、必填参数、适用范围、默认值、常见组合及恢复行为；具体操作另给完整语法。--help --json返回结构化帮助。帮助中的J/P/FILE/SHA/IDS需要换成实际值，方括号表示可选。
 
+## 提交、启动与停止的使用约定
+
+“提交入队”和“启动执行”是两件事：project register登记项目；experiment submit通过校验后创建job-id并加入QUEUED队列；调度器随后按公平、容量、GPU和门禁条件为某个阶段授予启动许可，阶段才会进入STARTING/RUNNING。“后续派发”专指授予新的阶段启动许可，不指接收新提交。
+
+暂停期间仍允许登记项目、校验清单、提交新实验及查询/管理队列。新提交不会因暂停而被拒绝，但对应范围内尚未获得启动许可的实验不能开始运行。暂停也阻止已有实验链的下一个阶段启动，例如训练完成后的验证、验证完成后的测试。当前阶段完成后照常回收进程和显存，不挂起GPU进程等待恢复。
+
+| 操作 | 新实验提交入队 | 尚未获许可的阶段启动 | 已运行阶段 | 协调器 |
+|---|---|---|---|---|
+| ugs project pause P | 允许 | 指定项目禁止，其他项目不受此开关影响 | 继续 | 运行 |
+| ugs scheduler pause | 允许 | 全部禁止 | 继续 | 运行 |
+| ugs scheduler pause --stop-running | 允许 | 全部禁止 | 全部受管实验终止并回收 | 运行 |
+| ugs scheduler stop --stop-running | 允许通过CLI登记入队，但不执行 | 全部禁止 | 全部受管实验终止并回收 | 全部收口后退出 |
+| ugs experiment stop J | 允许 | 不改变项目/全局开关，其他队列可能补位 | 指定已启动链终止并回收 | 运行 |
+
+普通pause保留暂停事务之前已授予的启动意图，因此少量已经处于STARTING的阶段仍可能转为RUNNING。需要“从现在起不再启动，连正在启动的也取消”时，使用scheduler pause --stop-running；它在同一事务中关闭后续启动并撤销所有已启动链的许可。之后只要无人执行scheduler resume，就不会有新的实验获准运行。命令返回不等于显存已回收，须检查STOPPING及active_count，确认收口完成。
+
+实验级experiment pause/resume已删除。project pause/resume保留，控制单个项目的新阶段启动；scheduler pause/resume保留，控制所有项目的新阶段启动。二者不是对实验进程发送持久暂停信号。
+
+恢复时：project resume P只解除该项目开关；scheduler resume只解除全局开关，仍须项目未暂停且满足其他准入条件。scheduler start只启动服务，不解除暂停。已失败、取消或结束的实验不会因resume/start自动重启。
+
+max_experiment只控制实验链容量：默认1，0禁止接纳新链但不终止已启动链，也不阻止它们完成有限后续阶段；调高容量不会解除暂停。未启动实验用experiment remove J撤回，已启动实验用experiment stop J终止。单实验--project可选，填写时必须匹配job-id归属；项目agent仍只管理本项目。
+
 ## 紧急停止与恢复
 
     ugs scheduler pause --stop-running

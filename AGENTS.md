@@ -9,7 +9,8 @@
 - 尊重已知使用权与预约；不先占部分GPU，不驱逐外部进程。轮询不能保证他人未来不用卡。
 - 仅使用既有SSH：`ssh -o BatchMode=yes a100`，在admin核实身份后进入gpu07；V100按已有授权使用`ssh -o BatchMode=yes v100`。不得读取或展示认证材料。
 - gpu07使用kzhang19账户下8张A100，SSH直接调度，不使用Slurm，不新增端口，不使用ssh:post。
-- 项目通过ugs自助register/validate/submit/list/show；单实验按job-id操作，--project可选且显式提供时校验归属。experiment pause/resume已删除；scheduler/project pause/resume管后续派发，remove撤回未启动实验，stop终止已启动链；失败/kill/取消不自动重启。
+- 项目可自助register/validate/submit/list/show；单实验按job-id定位，--project可选且显式提供时必须匹配归属。experiment pause/resume已删除；remove撤回从未启动实验，stop终止已启动链，失败/kill/取消不自动重启。
+- project pause/resume控制本项目、scheduler pause/resume控制全部项目的“新阶段启动许可”；不禁止登记项目或提交新实验加入QUEUED。暂停时当前阶段继续，结束后释放显存，下一阶段等待恢复；普通pause之前已授予的STARTING许可仍可继续。紧急阻止新启动并终止已启动/正在启动的受管链，使用scheduler pause --stop-running。恢复仍须全局及项目开关均放行。
 - max_experiment只控制容量，0不杀进程。紧急停止并阻塞用`ugs scheduler pause --stop-running`；恢复用resume。全局操作仅用户或授权管理会话执行。
 - 产物、checkpoint、预测、评分与实验日志留在各项目目录；UGS只集中调度元数据与服务日志。项目路径不可用时不得回退服务目录。
 - 本仓库提交不等于生产部署授权；保留已有工作，核实来源及SHA。修改生产代码必须经过相应验收，不能暗改运行阶段或冻结适配器PIN。
