@@ -1,6 +1,6 @@
 # UGS 统一实验管理器使用说明
 
-当前接口：ugs-exec-v3.1；协议global-gpu-scheduler-v2.0。实际上线及验收证据见GPU_SCHEDULER_DEPLOYMENT.md。只通过既有SSH操作gpu07，不开新服务端口，不使用Slurm。
+当前阶段接口：ugs-exec-v3.1；控制扩展ugs-control-v2；协议global-gpu-scheduler-v2.0。实际上线及验收证据见GPU_SCHEDULER_DEPLOYMENT.md。只通过既有SSH操作gpu07，不开新服务端口，不使用Slurm。
 
 ## 登录与命令入口
 
@@ -12,7 +12,7 @@
 
 ## 中文分层帮助
 
-ugs --help提供全部38个公开操作、逐项参数、默认值及常用功能，默认中文表格；也可按对象或具体操作缩小范围：
+ugs --help提供全部36个公开操作、逐项参数、默认值及常用功能，默认中文表格；也可按对象或具体操作缩小范围：
 
     ugs --help
     ugs experiment --help
@@ -64,20 +64,18 @@ ugs --help提供全部38个公开操作、逐项参数、默认值及常用功�
 | ugs experiment submit --file FILE | 提交有限实验链；项目内FIFO、项目间轮转；幂等重发不重复实验 |
 | ugs experiment list | 所有已登记实验，包含历史终态；显示实验ID、项目ID、实验名、状态、阶段、GPU ID、暂停和队位 |
 | ugs experiment list --project P | 只列该项目；也可加可重复的--status RUNNING、--status QUEUED等状态筛选 |
-| ugs experiment show J --project P | 表格显示实验身份、状态、阶段和待应用修订；加--json读取完整冻结清单、证据与更新历史 |
-| ugs experiment logs J --project P [--stage STAGE] [--tail 50] | 读取本项目阶段日志末尾；tail范围1..2000；不复制或搬迁日志 |
-| ugs experiment events J --project P | 查询状态/阶段/暂停变化审计 |
-| ugs experiment pause J --project P | 暂停等待中的实验；运行中的GPU进程不能用此命令暂停 |
-| ugs experiment resume J --project P | 恢复等待中的实验；终态不能恢复 |
-| ugs experiment remove J --project P | 撤回从未启动实验，记WITHDRAWN，不删除文件 |
+| ugs experiment show J [--project P] | 表格显示实验身份、状态、阶段和待应用修订；加--json读取完整冻结清单、证据与更新历史 |
+| ugs experiment logs J [--project P] [--stage STAGE] [--tail 50] | 读取本项目阶段日志末尾；tail范围1..2000；不复制或搬迁日志 |
+| ugs experiment events J [--project P] | 查询状态/阶段/暂停变化审计 |
+| ugs experiment remove J [--project P] | 撤回从未启动实验，记WITHDRAWN，不删除文件 |
 | ugs experiment remove --all --project P | 撤回该项目全部从未启动实验，跳过已开始链 |
-| ugs experiment stop J --project P | 强制取消指定已启动链及后代，记CANCELLED；不改队列开关或容量 |
+| ugs experiment stop J [--project P] | 强制取消指定已启动链及后代，记CANCELLED；不改队列开关或容量 |
 | ugs experiment stop --all --project P | 取消该项目全部已启动未结束链；该项目排队任务仍可能补位 |
 | ugs experiment stop --all | 取消全局已启动未结束链；仅用户/获授权管理会话使用；排队任务仍可能补位 |
-| ugs experiment update J --project P --expected-sha SHA --file FILE | 原子更新从未启动清单，保留job_id、队位和历史 |
-| ugs experiment amend J --project P --from-stage STAGE --expected-sha SHA --file FILE | 仅升级未开始的未来后缀；当前/完成前缀不变，阶段结束验收后应用；不改变冻结科学语义 |
-| ugs experiment retry J --project P --file FILE | 显式新尝试，原实验须终态，必须新输出目录；新job进入队尾，保留原失败/取消记录 |
-| ugs experiment gate J --project P --decision pass或fail --file FILE | 对WAITING_GATE提供本项目真实审核证据；不因训练退出码0自动宣称科学通过 |
+| ugs experiment update J [--project P] --expected-sha SHA --file FILE | 原子更新从未启动清单，保留job_id、队位和历史 |
+| ugs experiment amend J [--project P] --from-stage STAGE --expected-sha SHA --file FILE | 仅升级未开始的未来后缀；当前/完成前缀不变，阶段结束验收后应用；不改变冻结科学语义 |
+| ugs experiment retry J [--project P] --file FILE | 显式新尝试，原实验须终态，必须新输出目录；新job进入队尾，保留原失败/取消记录 |
+| ugs experiment gate J [--project P] --decision pass或fail --file FILE | 对WAITING_GATE提供本项目真实审核证据；不因训练退出码0自动宣称科学通过 |
 | ugs resource status | 最近GPU观察、UUID分配及当前容量；历史观察不代替启动时复查 |
 | ugs resource reserve IDS --reason TEXT | 登记已知预约避让，不占显存、不停止实验 |
 | ugs resource reservations | 表格查看当前避让登记 |
@@ -154,3 +152,9 @@ set允许的键：interval_seconds、ordinary_days、resource_max_mib、service_
 maintenance stop仅停止日志维护，不停止协调器或实验；scheduler stop也不会停止独立维护进程。主机重启后使用scheduler start和maintenance start分别启动；未安装开机服务。status显示上次维护、错误、各日志大小；有旧error时按时间与后续成功last_run判断是否已恢复。
 
 结构化日志使用共享锁、校验及原子替换，损坏时拒绝清理。审计压缩保留全部job/队位/manifest/幂等和PID/start/nonce/GPU身份；journal_epoch换段，本段revision从1开始，origin字段和checkpoint记录来源。旧详细审计会按归档保留规则删除；完整当前任务不会为了满足容量目标被删。阈值是周期维护目标，不是整个服务目录的硬配额。service.log采用保留inode的copytruncate，切换瞬间可能丢少量普通诊断文本，不能将其当唯一运行证据。
+
+## 最新实验控制规则
+
+详见[控制补充协议](GPU_SCHEDULER_CONTROL_POLICY.md)：experiment pause/resume已删除，运行阶段继续执行或stop终止。单实验job-id即可，--project可选，显式错项目拒绝；表格语法中的[J/P等]为占位说明，实际指令不输入方括号。
+
+正常结束、失败、取消都须确认本实验全部后代及GPU上下文消失；无外部进程的卡须回已核实驱动基础显存。STOPPING表示清理尚未完成，不是保留显存的暂停。scheduler pause --stop-running清理后保留服务；scheduler stop --stop-running清理后退出服务。普通scheduler/project pause只暂停后续派发，运行阶段继续。

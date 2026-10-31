@@ -1,0 +1,15 @@
+{
+  "controller_revision": "ugs-control-v2",
+  "runtime_release": "ugs-exec-v3.1",
+  "cpu_tests_passed": 48,
+  "files": {
+    "source/ugs_control_v2.py": "3be594e939d426144ccbf84e6f0e84d07fed63a23822cf53be450a60fd8be7a3",
+    "source/ugs_cli_control_v2.py": "d14690b822504dc25018a23c1defa17e869fa4642a76ed0ff885d7823a03cfb4",
+    "source/ugs_help_zh_v3.py": "02a366523500aeb1b29955dd3846ab0ad16cee1812c301c86309bf9a5972ff95",
+    "source/test_control_v2.py": "2395c22656e101533443360c9e4fd1d9629d114ffbb47fdf2e4678767bcb5e6a",
+    "source/ugs_exec_v3_1.py": "bfca69d1afc35a40b0ef374ecb57dfc7459fb860e962a445378d6ac2cd361f45",
+    "source/verify_launch_v3_1.py": "b80ac2e2f72d33d200a2a7fbce5806a019cf8fb871a8da8d678135d6e050bc33",
+    "protocol-v2.md": "718120b71561e67cfda3f5c474f5cf6ce7218c6f947a7757f0d8a2134815484d",
+    "ugs": "72bd39bb39468a898243be86faf20199d79aec00ef8329d3aa51c08f79a033d0"
+  }
+}

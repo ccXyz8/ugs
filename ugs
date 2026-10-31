@@ -1,2 +1,2 @@
 #!/bin/sh
-exec /public/home/kzhang19/kezhang/ycj/msswift_env/bin/python -B /public/home/kzhang19/kezhang/cc/global-gpu-scheduler/source/ugs_cli_zh_help_v2.py "$@"
+exec /public/home/kzhang19/kezhang/ycj/msswift_env/bin/python -B /public/home/kzhang19/kezhang/cc/global-gpu-scheduler/source/ugs_cli_control_v2.py "$@"

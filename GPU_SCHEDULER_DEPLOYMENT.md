@@ -6,7 +6,7 @@
 
 部署通过已有SSH进入计算节点gpu07，由kzhang19账户管理8张A100；不使用Slurm、不新增端口。服务器原部署服务根是源码中的ROOT，固定Python为源码中的PYTHON。这些值在本次归档中保持原样，避免把未经验收的可移植化修改混入源码快照。
 
-当前核心：source/ugs_exec_v3_1.py；许可入口：source/verify_launch_v3_1.py；显示：source/ugs_cli_zh_help_v2.py；中文帮助：source/ugs_help_zh_v2.py；维护：source/ugs_maintenance_v1_1.py。旧v2.3/v3文件用于兼容验证，不作为新派发入口。
+当前核心：source/ugs_exec_v3_1.py；许可入口：source/verify_launch_v3_1.py；控制扩展：source/ugs_control_v2.py；显示：source/ugs_cli_control_v2.py；中文帮助：source/ugs_help_zh_v3.py；维护：source/ugs_maintenance_v1_1.py。旧v2.3/v3文件用于兼容验证，不作为新派发入口。
 
 protocol-v2.md是执行器读取的协议文件，与GPU_SCHEDULER_PROTOCOL.md字节一致。用户侧详细调用方式见[使用说明](GPU_SCHEDULER_USAGE.md)，项目合同见[适配合同](GPU_SCHEDULER_ADAPTER_CONTRACT.md)。
 
@@ -24,3 +24,9 @@ protocol-v2.md是执行器读取的协议文件，与GPU_SCHEDULER_PROTOCOL.md�
 代码包含Linux /proc、节点/账号、解释器、目录和发布SHA约束。仅克隆仓库不构成可启动部署；首次使用须完成自身节点与存储核查、GPU基础占用复核、项目迁移对账、发布证据及适配验收。不能从现有生产状态复制出第二个并行调度器。
 
 已有服务器执行器、运行实验和项目适配器不因Git推送被改变。后续源码修改、测试及生产部署分别记录和执行。
+
+## 最新控制扩展
+
+当前公共入口为source/ugs_cli_control_v2.py，协调器入口为source/ugs_control_v2.py，中文帮助为source/ugs_help_zh_v3.py。冻结core/verifier/protocol及阶段runtime_release不变。实验级pause/resume移除，单job-id操作，--project可选；正常/失败/取消统一回收校验，详见[控制补充协议](GPU_SCHEDULER_CONTROL_POLICY.md)。
+
+最终48项CPU验收通过，含真实进程回收、正常结束GPU上下文残留等待、空卡基础显存复核、未知查询保留名额、异常写入仍清理和成功回执不能隐藏遗留worker。服务器证据acceptance/cpu-v3-2cc63eff6acf412cb43702029634d6de/result.json；控制发布acceptance/executor-release-control-v2.json；切换/实测acceptance/service-cutover-control-v2.json及control-v2-live-cli.json。回收查询及失败也写入共享GPU观察历史，避免漏记占用。另有仅job-id的真实CPU终止验收及10项生产只读CLI检查通过。现有科学实验没有重启。
