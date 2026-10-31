@@ -1,0 +1,19 @@
+{
+  "runtime": "ugs-exec-v3.1",
+  "snapshot_date": "2026-10-31",
+  "files": {
+    "ugs": "d1161aae5dd774fb808b4bf9affbfc00c3943f39250f2a569b8be473a435921f",
+    "protocol-v2.md": "718120b71561e67cfda3f5c474f5cf6ce7218c6f947a7757f0d8a2134815484d",
+    "source/ugs_exec_v3_1.py": "bfca69d1afc35a40b0ef374ecb57dfc7459fb860e962a445378d6ac2cd361f45",
+    "source/verify_launch_v3_1.py": "b80ac2e2f72d33d200a2a7fbce5806a019cf8fb871a8da8d678135d6e050bc33",
+    "source/ugs_cli_zh_help_v2.py": "82c7d4ee9ded6cd744fb1a4a6d9cdddb53de3eeddf0615fc272024220ec462cf",
+    "source/ugs_help_zh_v2.py": "f648e577de79158f05f09a7b7f47f26ead9bd134521dcfe1695947e12a27eb1a",
+    "source/ugs_maintenance_v1_1.py": "e71d5329756ba48cc2d8285115729bac18e2c4aae5b9c185d8c7e88f2c8a4d5c",
+    "source/test_executor_v3_1_final.py": "84bc85e276d919ccc490af07c05ad5e71198d297eace6771e04a7c283e9db961",
+    "source/test_maintenance_v1_1.py": "ca68e67b95793a9abcce46e26ab0f9b1dd8930fccbafbacb93b5b1f0830cd14f",
+    "source/ugs_exec_v3.py": "1467fa6c2d6e69de2575a08dd80cdf504cd01fcecefd40aa1890ac4b039e9ede",
+    "source/verify_launch_v3.py": "1507ee9ad9b75be2978aaba4a96172318c80e940a74b61b5f8916aa85bc2960f",
+    "source/ugs_exec_v2_3.py": "d31705672f0dfad65e9009ddd5b309b2f1cc22582c0790eb1358d4a887185387",
+    "source/verify_launch_v2_3.py": "651429c8fb7cd54f64ed793e99364cbb1c02b31597c0d6db7a86b3035bedf3ad"
+  }
+}

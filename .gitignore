@@ -1,0 +1,39 @@
+# Local/editor/cache
+.DS_Store
+.idea/
+.vscode/
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Credentials and machine-local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+id_rsa*
+id_ed25519*
+*.local.json
+
+# Live scheduler state and generated acceptance fixtures
+/events.jsonl
+/resources.jsonl
+/service-events.jsonl
+/service.log
+/*.lock
+/acceptance/
+/maintenance-archives/
+/maintenance-daemon.json
+/retention-policy.json
+/retention-last-run.json
+/retention-error.json
+/runtime/
+/logs/
+
+# Experiment/model artifacts
+*.safetensors
+*.ckpt
+*.pt
+*.pth
