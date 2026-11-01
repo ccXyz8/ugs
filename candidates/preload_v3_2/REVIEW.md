@@ -35,7 +35,7 @@
 1. 审查本候选及SHA，运行本地CPU测试。已完成；这不等于真实GPU验收。
 2. 在用户确认的服务器隔离fixture目录执行真实Linux Store/锁、完整权限检查、并发取消、慢磁盘/审计和完整适配器CPU集成验收。限定测试根，不读写生产队列，不创建CUDA worker。现已执行并通过下述8项隔离Linux CPU协议集成。
 3. 集成通过后，用户或获明确授权的管理会话批准生产接入：上传固定候选目录；在state.lock下将新入口及依赖SHA和验收证据加入生产executor_release；保留旧入口以供已冻结阶段继续使用。无需仅因增加可选入口而重启协调器；不改容量或暂停标记。
-4. 项目在独立新清单和输出目录显式选择候选verifier，完整source_sha256及CPU准入报告纳入新verifier和preload.py的PIN，初始和preload均使用新入口；新接口实验正常入队，不修改job-000010或任何当前阶段。不得自动重新提交失败实验。
+4. 项目在独立新清单和输出目录显式选择候选verifier，stage.source_sha256绑定项目内冻结依赖清单和发布清单的SHA；这些清单记录服务目录新verifier和preload.py的完整路径/PIN，CPU报告覆盖阶段源码及两项外部依赖，适配器在preload前逐项核验外部SHA。不可把服务目录直接列入stage.source_sha256或扩张项目allowed_roots，初始和preload均使用新入口；新接口实验正常入队，不修改job-000010或任何当前阶段。不得自动重新提交失败实验。
 5. 真实有界接口验收通过后，才决定后续正式实验是否采用。失败仍保持终态，不自动退回旧入口、不绕过检查。
 
 制定本方案时这些生产动作尚未执行；最新执行状态见文末登记记录。依据AGENTS“生产代码必须经过相应验收，不能暗改运行阶段或冻结适配器PIN”及本次项目会话“只准备候选，不部署”的明确范围，步骤3和4不能由本次候选开发自动触发。需要确认的具体动作是生产发布新verifier/PIN，以及由项目建立新的有界接口尝试；无需批准停止旧实验或变更全局容量，因为本方案不包含这些动作。
@@ -59,3 +59,5 @@ CPU测试涵盖成功、最终锁前6秒延迟、扫描后超时、状态提交�
 ## 生产可选入口登记（2026-11-01 15:39台北）
 
 用户明确批准登记新verifier/PIN并让ms-swift-main提交新的有界接口实验优先执行。上文步骤3已完成：两文件上传生产候选路径并在state.lock内追加executor_release文件PIN与CPU证据，release_ok通过。旧入口和冻结原件不变，服务未重启、容量未调整、job-000010未复活。此为可选入口登记，不宣称已完成真实GPU接口验收。登记证据为服务根acceptance/preload-v32-production-registration.json及executor-release-preload-v32-candidate.json。项目负责新的清单、CPU报告、输出目录和正式自助提交，不改旧运行阶段。
+
+接入纠正：冻结stage.source_sha256只允许项目根内路径。实际项目准入发现直接加入服务目录路径会被Source identity mismatch拒绝，因此使用项目内冻结依赖清单的SHA间接绑定外部文件，CPU报告包含完整外部PIN，适配器逐项核验，服务release_ok同时检查两文件；没有放宽路径隔离。Linux CPU协议fixture覆盖真实权限握手，但未声称覆盖项目实际manifest准入。
