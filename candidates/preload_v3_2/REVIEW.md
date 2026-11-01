@@ -1,6 +1,6 @@
 # preload v3.2 候选审查与接入方案
 
-状态：本地候选，不是生产发布。2026-11-01。此次没有上传服务器、切换入口、重启服务、改变容量/队列或重试实验。
+状态：本地候选，不是生产发布。2026-11-01。最初本地候选现已上传到独立验收bundle完成Linux CPU集成；未上传生产候选路径、切换入口、重启服务、改变容量/队列或重试实验。
 
 ## 解决范围
 
@@ -33,7 +33,7 @@
 ## 接入顺序与授权边界
 
 1. 审查本候选及SHA，运行本地CPU测试。已完成；这不等于真实GPU验收。
-2. 在用户确认的服务器隔离fixture目录执行真实Linux Store/锁、完整权限检查、并发取消、慢磁盘/审计和完整适配器CPU集成验收。限定测试根，不读写生产队列，不创建CUDA worker。当前未执行。
+2. 在用户确认的服务器隔离fixture目录执行真实Linux Store/锁、完整权限检查、并发取消、慢磁盘/审计和完整适配器CPU集成验收。限定测试根，不读写生产队列，不创建CUDA worker。现已执行并通过下述8项隔离Linux CPU协议集成。
 3. 集成通过后，用户或获明确授权的管理会话批准生产接入：上传固定候选目录；在state.lock下将新入口及依赖SHA和验收证据加入生产executor_release；保留旧入口以供已冻结阶段继续使用。无需仅因增加可选入口而重启协调器；不改容量或暂停标记。
 4. 项目在独立新清单和输出目录显式选择候选verifier，完整source_sha256及CPU准入报告纳入新verifier和preload.py的PIN，初始和preload均使用新入口；新接口实验正常入队，不修改job-000010或任何当前阶段。不得自动重新提交失败实验。
 5. 真实有界接口验收通过后，才决定后续正式实验是否采用。失败仍保持终态，不自动退回旧入口、不绕过检查。
@@ -45,3 +45,13 @@
     python3 -B candidates/preload_v3_2/test_preload.py
 
 CPU测试涵盖成功、最终锁前6秒延迟、扫描后超时、状态提交超时、审计慢/失败、等待锁时取消/预约、UUID冲突、采样失败、历史改变、最终预算/发布PIN改变及准备期限过期。全部14项通过；模拟接口测试尚不能替代真实进程身份、真实文件锁/文件系统及GPU验证。
+
+## 真实Linux隔离CPU集成结果（2026-11-01）
+
+8项全部通过，证据与逐阶段耗时见linux-integration-summary.json。使用冻结core真实Store、flock、日志校验/fsync、/proc进程身份、发布和源码SHA、内存/磁盘预算以及完整初始许可→preload→条件启动CPU worker协议。以真实guardian→fixture适配器→verifier子进程建立亲子/session身份；没有运行项目适配器或CUDA。GPU硬件数据仍为8张模拟卡，扫描的记录锁/落盘及五分钟窗口判定使用真实core。
+
+覆盖成功、真实锁竞争、等待锁时并发取消、慢状态提交、慢审计写入、错误代次身份、最终预算变化、一次性许可重用。锁竞争用例等待最终state.lock约3.000秒后重新扫描并成功；慢提交/审计及其余拒绝用例均没有启动CPU worker。
+
+最终验收目录：/public/home/kzhang19/kezhang/cc/global-gpu-scheduler/acceptance/preload-v32-linux-1217dc945a0b4605aae543d4a6f4d5c5；完整linux-integration-result.json SHA 375dc6fbd01ab956e875c504d74d644c07fa4d2dd5af3a7d34ae943b9dd5277f。首轮fixture错误只提供2卡而被8卡检查拒绝，旧目录preload-v32-linux-be50028bbd3649ddab574c09891042ed留存；修正fixture后候选算法及入口SHA未变。
+
+测试重定向所有Store与观察路径到bundle/fixtures，并以Python审计钩子拒绝访问bundle以外的调度状态文件；没有读取或修改生产队列。Linux CPU协议集成已完成，但真实项目适配器/有界GPU接口尚未验收；步骤3生产发布及项目新尝试仍未执行。

@@ -1,0 +1,686 @@
+{
+  "passed": true,
+  "tests": 8,
+  "real_linux_store_locks_identities": true,
+  "synthetic_gpu_telemetry": true,
+  "cuda_used": false,
+  "production_state_accessed": false,
+  "project_adapter_used": false,
+  "adapter_protocol": "real guardian -> CPU fixture adapter -> initial verifier -> preload verifier -> conditional CPU worker",
+  "bundle": "/public/home/kzhang19/kezhang/cc/global-gpu-scheduler/acceptance/preload-v32-linux-1217dc945a0b4605aae543d4a6f4d5c5",
+  "candidate_files": {
+    "test_linux_integration.py": "76653a17f616cb620496bb5498b698f8bdfd4f8e2ed4d4bbcb47121c7acdc52e",
+    "preload.py": "6ee2d1354e9af32a430ce1d18b5ddef8b5a1344216608d0797e33f4a8c36212f",
+    "verify_launch_v3_2.py": "26e5e077924f67837c01bf0cee38b34f8bd331661dea9c48b3dd53560b5682a5"
+  },
+  "evidence_sha256": "375dc6fbd01ab956e875c504d74d644c07fa4d2dd5af3a7d34ae943b9dd5277f",
+  "cases": [
+    {
+      "case": "success",
+      "passed": true,
+      "cpu_worker_started": true,
+      "preload_code": 0,
+      "preload_message": null,
+      "phases": [
+        {
+          "phase": "initial_state_lock_and_replay",
+          "seconds": 0.0012266188859939575
+        },
+        {
+          "phase": "identity_release_permission",
+          "seconds": 0.0009419945999979973
+        },
+        {
+          "phase": "source_preflight",
+          "seconds": 0.0004400387406349182
+        },
+        {
+          "phase": "host_storage_budget",
+          "seconds": 0.002288365736603737
+        },
+        {
+          "phase": "read_observation_history",
+          "seconds": 0.01571163348853588
+        },
+        {
+          "phase": "verify_idle_window",
+          "seconds": 0.0007148496806621552
+        },
+        {
+          "phase": "first_gpu_scan",
+          "seconds": 0.005542847327888012
+        },
+        {
+          "phase": "read_observation_history",
+          "seconds": 0.0012301960960030556
+        },
+        {
+          "phase": "verify_idle_window",
+          "seconds": 0.0007234076038002968
+        },
+        {
+          "phase": "scan_spacing",
+          "seconds": 2.0000743996351957
+        },
+        {
+          "phase": "final_state_lock_and_replay",
+          "seconds": 0.0016553429886698723
+        },
+        {
+          "phase": "identity_release_permission",
+          "seconds": 0.0008842609822750092
+        },
+        {
+          "phase": "source_preflight",
+          "seconds": 0.00047365110367536545
+        },
+        {
+          "phase": "host_storage_budget",
+          "seconds": 0.0019996874034404755
+        },
+        {
+          "phase": "read_observation_history",
+          "seconds": 0.0011415928602218628
+        },
+        {
+          "phase": "verify_idle_window",
+          "seconds": 0.0005716821178793907
+        },
+        {
+          "phase": "final_gpu_scan",
+          "seconds": 0.0013830000534653664
+        },
+        {
+          "phase": "read_observation_history",
+          "seconds": 0.0010013021528720856
+        },
+        {
+          "phase": "verify_idle_window",
+          "seconds": 0.00055718794465065
+        },
+        {
+          "phase": "identity_release_permission",
+          "seconds": 0.0007241228595376015
+        },
+        {
+          "phase": "source_preflight",
+          "seconds": 0.00044434238225221634
+        },
+        {
+          "phase": "host_storage_budget",
+          "seconds": 0.0014044633135199547
+        },
+        {
+          "phase": "state_commit_and_unlock",
+          "seconds": 0.0012506498023867607
+        }
+      ]
+    },
+    {
+      "case": "slow_lock",
+      "passed": true,
+      "cpu_worker_started": true,
+      "preload_code": 0,
+      "preload_message": null,
+      "phases": [
+        {
+          "phase": "initial_state_lock_and_replay",
+          "seconds": 0.0011780411005020142
+        },
+        {
+          "phase": "identity_release_permission",
+          "seconds": 0.0007728626951575279
+        },
+        {
+          "phase": "source_preflight",
+          "seconds": 0.0004253322258591652
+        },
+        {
+          "phase": "host_storage_budget",
+          "seconds": 0.0016548000276088715
+        },
+        {
+          "phase": "read_observation_history",
+          "seconds": 0.013207358308136463
+        },
+        {
+          "phase": "verify_idle_window",
+          "seconds": 0.0006899377331137657
+        },
+        {
+          "phase": "first_gpu_scan",
+          "seconds": 0.41681638918817043
+        },
+        {
+          "phase": "read_observation_history",
+          "seconds": 0.0012023672461509705
+        },
+        {
+          "phase": "verify_idle_window",
+          "seconds": 0.0005657663568854332
+        },
+        {
+          "phase": "scan_spacing",
+          "seconds": 2.000065623782575
+        },
+        {
+          "phase": "final_state_lock_and_replay",
+          "seconds": 2.999817531555891
+        },
+        {
+          "phase": "identity_release_permission",
+          "seconds": 0.003665766678750515
+        },
+        {
+          "phase": "source_preflight",
+          "seconds": 0.003999135456979275
+        },
+        {
+          "phase": "host_storage_budget",
+          "seconds": 0.0018692491576075554
+        },
+        {
+          "phase": "read_observation_history",
+          "seconds": 0.00261808093637228
+        },
+        {
+          "phase": "verify_idle_window",
+          "seconds": 0.0005803601816296577
+        },
+        {
+          "phase": "final_gpu_scan",
+          "seconds": 0.0018905466422438622
+        },
+        {
+          "phase": "read_observation_history",
+          "seconds": 0.0011820504441857338
+        },
+        {
+          "phase": "verify_idle_window",
+          "seconds": 0.0006831018254160881
+        },
+        {
+          "phase": "identity_release_permission",
+          "seconds": 0.0007403306663036346
+        },
+        {
+          "phase": "source_preflight",
+          "seconds": 0.0004317872226238251
+        },
+        {
+          "phase": "host_storage_budget",
+          "seconds": 0.0010819509625434875
+        },
+        {
+          "phase": "state_commit_and_unlock",
+          "seconds": 0.001102185808122158
+        }
+      ]
+    },
+    {
+      "case": "cancel",
+      "passed": true,
+      "cpu_worker_started": false,
+      "preload_code": 2,
+      "preload_message": "STOPPED_OR_NO_ACTIVE",
+      "phases": [
+        {
+          "phase": "initial_state_lock_and_replay",
+          "seconds": 0.0012058885768055916
+        },
+        {
+          "phase": "identity_release_permission",
+          "seconds": 0.0008751768618822098
+        },
+        {
+          "phase": "source_preflight",
+          "seconds": 0.0004980964586138725
+        },
+        {
+          "phase": "host_storage_budget",
+          "seconds": 0.004846918396651745
+        },
+        {
+          "phase": "read_observation_history",
+          "seconds": 0.019450601190328598
+        },
+        {
+          "phase": "verify_idle_window",
+          "seconds": 0.000697295181453228
+        },
+        {
+          "phase": "first_gpu_scan",
+          "seconds": 0.23211545124650002
+        },
+        {
+          "phase": "read_observation_history",
+          "seconds": 0.0011741509661078453
+        },
+        {
+          "phase": "verify_idle_window",
+          "seconds": 0.0005890289321541786
+        },
+        {
+          "phase": "scan_spacing",
+          "seconds": 2.00007591675967
+        },
+        {
+          "phase": "final_state_lock_and_replay",
+          "seconds": 3.003974691964686
+        },
+        {
+          "phase": "identity_release_permission",
+          "seconds": 4.298985004425049e-06
+        }
+      ]
+    },
+    {
+      "case": "slow_commit",
+      "passed": true,
+      "cpu_worker_started": false,
+      "preload_code": 2,
+      "preload_message": "Final GPU recheck became stale",
+      "phases": [
+        {
+          "phase": "initial_state_lock_and_replay",
+          "seconds": 0.0013842424377799034
+        },
+        {
+          "phase": "identity_release_permission",
+          "seconds": 0.004805491305887699
+        },
+        {
+          "phase": "source_preflight",
+          "seconds": 0.0005000978708267212
+        },
+        {
+          "phase": "host_storage_budget",
+          "seconds": 0.0015598088502883911
+        },
+        {
+          "phase": "read_observation_history",
+          "seconds": 0.012069357559084892
+        },
+        {
+          "phase": "verify_idle_window",
+          "seconds": 0.0008517047390341759
+        },
+        {
+          "phase": "first_gpu_scan",
+          "seconds": 0.001530076377093792
+        },
+        {
+          "phase": "read_observation_history",
+          "seconds": 0.0010379543527960777
+        },
+        {
+          "phase": "verify_idle_window",
+          "seconds": 0.0006454773247241974
+        },
+        {
+          "phase": "scan_spacing",
+          "seconds": 2.000075942836702
+        },
+        {
+          "phase": "final_state_lock_and_replay",
+          "seconds": 0.0019458504393696785
+        },
+        {
+          "phase": "identity_release_permission",
+          "seconds": 0.0013466132804751396
+        },
+        {
+          "phase": "source_preflight",
+          "seconds": 0.0007137041538953781
+        },
+        {
+          "phase": "host_storage_budget",
+          "seconds": 0.0016661733388900757
+        },
+        {
+          "phase": "read_observation_history",
+          "seconds": 0.0014645271003246307
+        },
+        {
+          "phase": "verify_idle_window",
+          "seconds": 0.0009027263149619102
+        },
+        {
+          "phase": "final_gpu_scan",
+          "seconds": 0.0017858482897281647
+        },
+        {
+          "phase": "read_observation_history",
+          "seconds": 0.0013940101489424706
+        },
+        {
+          "phase": "verify_idle_window",
+          "seconds": 0.0008660349994897842
+        },
+        {
+          "phase": "identity_release_permission",
+          "seconds": 0.0011440915986895561
+        },
+        {
+          "phase": "source_preflight",
+          "seconds": 0.0007110219448804855
+        },
+        {
+          "phase": "host_storage_budget",
+          "seconds": 0.0015106024220585823
+        },
+        {
+          "phase": "state_commit_and_unlock",
+          "seconds": 2.2019295189529657
+        }
+      ]
+    },
+    {
+      "case": "slow_audit",
+      "passed": true,
+      "cpu_worker_started": false,
+      "preload_code": 2,
+      "preload_message": "Final GPU recheck became stale after decision audit",
+      "phases": [
+        {
+          "phase": "initial_state_lock_and_replay",
+          "seconds": 0.001155114732682705
+        },
+        {
+          "phase": "identity_release_permission",
+          "seconds": 0.000734284520149231
+        },
+        {
+          "phase": "source_preflight",
+          "seconds": 0.00038786884397268295
+        },
+        {
+          "phase": "host_storage_budget",
+          "seconds": 0.0016556410118937492
+        },
+        {
+          "phase": "read_observation_history",
+          "seconds": 0.011996976099908352
+        },
+        {
+          "phase": "verify_idle_window",
+          "seconds": 0.001045219600200653
+        },
+        {
+          "phase": "first_gpu_scan",
+          "seconds": 0.0015738839283585548
+        },
+        {
+          "phase": "read_observation_history",
+          "seconds": 0.0009405696764588356
+        },
+        {
+          "phase": "verify_idle_window",
+          "seconds": 0.0006179222837090492
+        },
+        {
+          "phase": "scan_spacing",
+          "seconds": 2.000075734220445
+        },
+        {
+          "phase": "final_state_lock_and_replay",
+          "seconds": 0.0013521704822778702
+        },
+        {
+          "phase": "identity_release_permission",
+          "seconds": 0.0009042015299201012
+        },
+        {
+          "phase": "source_preflight",
+          "seconds": 0.0004366878420114517
+        },
+        {
+          "phase": "host_storage_budget",
+          "seconds": 0.001581844873726368
+        },
+        {
+          "phase": "read_observation_history",
+          "seconds": 0.0010882709175348282
+        },
+        {
+          "phase": "verify_idle_window",
+          "seconds": 0.000615876168012619
+        },
+        {
+          "phase": "final_gpu_scan",
+          "seconds": 0.0017449622973799706
+        },
+        {
+          "phase": "read_observation_history",
+          "seconds": 0.0010979175567626953
+        },
+        {
+          "phase": "verify_idle_window",
+          "seconds": 0.0005213292315602303
+        },
+        {
+          "phase": "identity_release_permission",
+          "seconds": 0.0007614269852638245
+        },
+        {
+          "phase": "source_preflight",
+          "seconds": 0.00041785649955272675
+        },
+        {
+          "phase": "host_storage_budget",
+          "seconds": 0.0014521144330501556
+        },
+        {
+          "phase": "state_commit_and_unlock",
+          "seconds": 0.003070751205086708
+        }
+      ]
+    },
+    {
+      "case": "bad_identity",
+      "passed": true,
+      "cpu_worker_started": false,
+      "preload_code": null,
+      "preload_message": null,
+      "phases": []
+    },
+    {
+      "case": "budget_change",
+      "passed": true,
+      "cpu_worker_started": false,
+      "preload_code": 2,
+      "preload_message": "Host/storage budget changed",
+      "phases": [
+        {
+          "phase": "initial_state_lock_and_replay",
+          "seconds": 0.0011455733329057693
+        },
+        {
+          "phase": "identity_release_permission",
+          "seconds": 0.0007925666868686676
+        },
+        {
+          "phase": "source_preflight",
+          "seconds": 0.0004027979448437691
+        },
+        {
+          "phase": "host_storage_budget",
+          "seconds": 0.0017710784450173378
+        },
+        {
+          "phase": "read_observation_history",
+          "seconds": 0.012567553669214249
+        },
+        {
+          "phase": "verify_idle_window",
+          "seconds": 0.0007216194644570351
+        },
+        {
+          "phase": "first_gpu_scan",
+          "seconds": 0.007084697484970093
+        },
+        {
+          "phase": "read_observation_history",
+          "seconds": 0.0011409251019358635
+        },
+        {
+          "phase": "verify_idle_window",
+          "seconds": 0.0007059387862682343
+        },
+        {
+          "phase": "scan_spacing",
+          "seconds": 2.000075181014836
+        },
+        {
+          "phase": "final_state_lock_and_replay",
+          "seconds": 0.001495257019996643
+        },
+        {
+          "phase": "identity_release_permission",
+          "seconds": 0.0008431896567344666
+        },
+        {
+          "phase": "source_preflight",
+          "seconds": 0.0004646340385079384
+        },
+        {
+          "phase": "host_storage_budget",
+          "seconds": 0.0013438239693641663
+        },
+        {
+          "phase": "read_observation_history",
+          "seconds": 0.0010087145492434502
+        },
+        {
+          "phase": "verify_idle_window",
+          "seconds": 0.0005885614082217216
+        },
+        {
+          "phase": "final_gpu_scan",
+          "seconds": 0.0013285335153341293
+        },
+        {
+          "phase": "read_observation_history",
+          "seconds": 0.0009575895965099335
+        },
+        {
+          "phase": "verify_idle_window",
+          "seconds": 0.0005607642233371735
+        },
+        {
+          "phase": "identity_release_permission",
+          "seconds": 0.00313718244433403
+        },
+        {
+          "phase": "source_preflight",
+          "seconds": 0.0004264768213033676
+        },
+        {
+          "phase": "host_storage_budget",
+          "seconds": 2.50060111284256e-06
+        }
+      ]
+    },
+    {
+      "case": "reuse",
+      "passed": true,
+      "cpu_worker_started": true,
+      "preload_code": 0,
+      "preload_message": null,
+      "phases": [
+        {
+          "phase": "initial_state_lock_and_replay",
+          "seconds": 0.0011064065620303154
+        },
+        {
+          "phase": "identity_release_permission",
+          "seconds": 0.0008041420951485634
+        },
+        {
+          "phase": "source_preflight",
+          "seconds": 0.0004486367106437683
+        },
+        {
+          "phase": "host_storage_budget",
+          "seconds": 0.0014018192887306213
+        },
+        {
+          "phase": "read_observation_history",
+          "seconds": 0.01370704174041748
+        },
+        {
+          "phase": "verify_idle_window",
+          "seconds": 0.0006838422268629074
+        },
+        {
+          "phase": "first_gpu_scan",
+          "seconds": 0.0014769313856959343
+        },
+        {
+          "phase": "read_observation_history",
+          "seconds": 0.001043650321662426
+        },
+        {
+          "phase": "verify_idle_window",
+          "seconds": 0.0006344588473439217
+        },
+        {
+          "phase": "scan_spacing",
+          "seconds": 2.0000702841207385
+        },
+        {
+          "phase": "final_state_lock_and_replay",
+          "seconds": 0.0018885405734181404
+        },
+        {
+          "phase": "identity_release_permission",
+          "seconds": 0.0008171843364834785
+        },
+        {
+          "phase": "source_preflight",
+          "seconds": 0.0004378184676170349
+        },
+        {
+          "phase": "host_storage_budget",
+          "seconds": 0.0016723833978176117
+        },
+        {
+          "phase": "read_observation_history",
+          "seconds": 0.0016720127314329147
+        },
+        {
+          "phase": "verify_idle_window",
+          "seconds": 0.000616416335105896
+        },
+        {
+          "phase": "final_gpu_scan",
+          "seconds": 0.00890332367271185
+        },
+        {
+          "phase": "read_observation_history",
+          "seconds": 0.0011099781841039658
+        },
+        {
+          "phase": "verify_idle_window",
+          "seconds": 0.0005633635446429253
+        },
+        {
+          "phase": "identity_release_permission",
+          "seconds": 0.000696524977684021
+        },
+        {
+          "phase": "source_preflight",
+          "seconds": 0.00041708070784807205
+        },
+        {
+          "phase": "host_storage_budget",
+          "seconds": 0.0014126216992735863
+        },
+        {
+          "phase": "state_commit_and_unlock",
+          "seconds": 0.005654112435877323
+        }
+      ]
+    }
+  ]
+}

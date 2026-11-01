@@ -7,11 +7,15 @@
     "verify_launch_v3_2.py": "26e5e077924f67837c01bf0cee38b34f8bd331661dea9c48b3dd53560b5682a5",
     "test_preload.py": "9968b78f28b472789c967b36da7e0b88016663b4365745a85d06fe4abb6b1300",
     "cpu-test-result.json": "c07f39159518482aeb3a152a739cb0038d45533a7ba44bfd1084116f22d0fadd",
-    "REVIEW.md": "5330f4998056dd5fa064e55e11153a8f814cef40541c2a67371a2d35d7d1a9ec"
+    "REVIEW.md": "42eb519f4010dc7533cb70f8844ea36aec30b0e92843f9e8bb08594e83217c44",
+    "test_linux_integration.py": "76653a17f616cb620496bb5498b698f8bdfd4f8e2ed4d4bbcb47121c7acdc52e",
+    "linux-integration-summary.json": "c446e5e0959fbaf6989c5f8413b0d74fd4e2899dfe4b847e943e9132679ba596",
+    "linux-fixture-path.txt": "4ced0dbbd59c70597bec459595417404b1111508324e3f3ee9b707235f2d1a87"
   },
   "frozen_files": {
     "source/ugs_exec_v3_1.py": "bfca69d1afc35a40b0ef374ecb57dfc7459fb860e962a445378d6ac2cd361f45",
     "source/verify_launch_v3_1.py": "b80ac2e2f72d33d200a2a7fbce5806a019cf8fb871a8da8d678135d6e050bc33",
     "protocol-v2.md": "718120b71561e67cfda3f5c474f5cf6ce7218c6f947a7757f0d8a2134815484d"
-  }
+  },
+  "isolated_linux_cpu_tests": 8
 }
