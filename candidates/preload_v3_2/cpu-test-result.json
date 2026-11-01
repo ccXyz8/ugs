@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "tests": 14,
+  "failures": 0,
+  "errors": 0,
+  "test_kind": "deterministic CPU fault injection with simulated core/clock",
+  "production_state_changed": false,
+  "cuda_used": false,
+  "server_integration_tested": false
+}
