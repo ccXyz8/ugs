@@ -1,0 +1,24 @@
+{
+  "status": "prepared_not_executed",
+  "candidate_revision": "ugs-preload-v3.2-candidate1",
+  "runtime_release": "ugs-exec-v3.1",
+  "files": {
+    "/public/home/kzhang19/kezhang/cc/global-gpu-scheduler/candidates/preload_v3_2/preload.py": "6ee2d1354e9af32a430ce1d18b5ddef8b5a1344216608d0797e33f4a8c36212f",
+    "/public/home/kzhang19/kezhang/cc/global-gpu-scheduler/candidates/preload_v3_2/verify_launch_v3_2.py": "26e5e077924f67837c01bf0cee38b34f8bd331661dea9c48b3dd53560b5682a5"
+  },
+  "cpu_evidence": {
+    "path": "/public/home/kzhang19/kezhang/cc/global-gpu-scheduler/acceptance/preload-v32-linux-1217dc945a0b4605aae543d4a6f4d5c5/linux-integration-result.json",
+    "sha256": "375dc6fbd01ab956e875c504d74d644c07fa4d2dd5af3a7d34ae943b9dd5277f"
+  },
+  "steps": [
+    "Upload two files only if target is absent; verify SHA",
+    "Under state.lock verify current executor_release then append these two file PINs and CPU evidence, preserving all existing entries",
+    "Check release_ok, policies and live identities unchanged",
+    "Notify ms-swift-main to prepare a new independently identified bounded interface manifest with these PINs and current resource override"
+  ],
+  "restart_coordinator": false,
+  "change_capacity": false,
+  "resume_other_projects": false,
+  "retry_job_000010": false,
+  "alter_existing_manifest": false
+}
