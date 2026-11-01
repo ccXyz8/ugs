@@ -1,6 +1,6 @@
 # preload v3.2 候选审查与接入方案
 
-状态：本地候选，不是生产发布。2026-11-01。最初本地候选现已上传到独立验收bundle完成Linux CPU集成；未上传生产候选路径、切换入口、重启服务、改变容量/队列或重试实验。
+状态：已按用户授权登记为可选生产verifier；真实GPU接口验收待项目新实验。2026-11-01。候选阶段仅上传独立验收bundle完成Linux CPU集成；后续获批的生产可选入口登记见文末，未重启服务、改变容量/队列或重试旧实验。
 
 ## 解决范围
 
@@ -28,7 +28,7 @@
 
     /public/home/kzhang19/kezhang/cc/global-gpu-scheduler/candidates/preload_v3_2/verify_launch_v3_2.py
 
-此路径目前尚未创建。目录布局要求入口上两级根目录下存在source/ugs_exec_v3_1.py；所有候选文件须共同上传，不能只复制入口文件。
+此路径在候选阶段未创建；现已按文末登记记录创建。目录布局要求入口上两级根目录下存在source/ugs_exec_v3_1.py；所有候选文件须共同上传，不能只复制入口文件。
 
 ## 接入顺序与授权边界
 
@@ -38,7 +38,7 @@
 4. 项目在独立新清单和输出目录显式选择候选verifier，完整source_sha256及CPU准入报告纳入新verifier和preload.py的PIN，初始和preload均使用新入口；新接口实验正常入队，不修改job-000010或任何当前阶段。不得自动重新提交失败实验。
 5. 真实有界接口验收通过后，才决定后续正式实验是否采用。失败仍保持终态，不自动退回旧入口、不绕过检查。
 
-这些生产动作尚未执行。依据AGENTS“生产代码必须经过相应验收，不能暗改运行阶段或冻结适配器PIN”及本次项目会话“只准备候选，不部署”的明确范围，步骤3和4不能由本次候选开发自动触发。需要确认的具体动作是生产发布新verifier/PIN，以及由项目建立新的有界接口尝试；无需批准停止旧实验或变更全局容量，因为本方案不包含这些动作。
+制定本方案时这些生产动作尚未执行；最新执行状态见文末登记记录。依据AGENTS“生产代码必须经过相应验收，不能暗改运行阶段或冻结适配器PIN”及本次项目会话“只准备候选，不部署”的明确范围，步骤3和4不能由本次候选开发自动触发。需要确认的具体动作是生产发布新verifier/PIN，以及由项目建立新的有界接口尝试；无需批准停止旧实验或变更全局容量，因为本方案不包含这些动作。
 
 ## 测试复现
 
@@ -54,4 +54,8 @@ CPU测试涵盖成功、最终锁前6秒延迟、扫描后超时、状态提交�
 
 最终验收目录：/public/home/kzhang19/kezhang/cc/global-gpu-scheduler/acceptance/preload-v32-linux-1217dc945a0b4605aae543d4a6f4d5c5；完整linux-integration-result.json SHA 375dc6fbd01ab956e875c504d74d644c07fa4d2dd5af3a7d34ae943b9dd5277f。首轮fixture错误只提供2卡而被8卡检查拒绝，旧目录preload-v32-linux-be50028bbd3649ddab574c09891042ed留存；修正fixture后候选算法及入口SHA未变。
 
-测试重定向所有Store与观察路径到bundle/fixtures，并以Python审计钩子拒绝访问bundle以外的调度状态文件；没有读取或修改生产队列。Linux CPU协议集成已完成，但真实项目适配器/有界GPU接口尚未验收；步骤3生产发布及项目新尝试仍未执行。
+测试重定向所有Store与观察路径到bundle/fixtures，并以Python审计钩子拒绝访问bundle以外的调度状态文件；没有读取或修改生产队列。Linux CPU协议集成已完成，但真实项目适配器/有界GPU接口尚未验收；当次测试结束时步骤3生产发布及项目新尝试尚未执行；最新登记状态见下文。
+
+## 生产可选入口登记（2026-11-01 15:39台北）
+
+用户明确批准登记新verifier/PIN并让ms-swift-main提交新的有界接口实验优先执行。上文步骤3已完成：两文件上传生产候选路径并在state.lock内追加executor_release文件PIN与CPU证据，release_ok通过。旧入口和冻结原件不变，服务未重启、容量未调整、job-000010未复活。此为可选入口登记，不宣称已完成真实GPU接口验收。登记证据为服务根acceptance/preload-v32-production-registration.json及executor-release-preload-v32-candidate.json。项目负责新的清单、CPU报告、输出目录和正式自助提交，不改旧运行阶段。

@@ -1,5 +1,5 @@
 {
-  "status": "prepared_not_executed",
+  "status": "registered_opt_in",
   "candidate_revision": "ugs-preload-v3.2-candidate1",
   "runtime_release": "ugs-exec-v3.1",
   "files": {
@@ -20,5 +20,6 @@
   "change_capacity": false,
   "resume_other_projects": false,
   "retry_job_000010": false,
-  "alter_existing_manifest": false
+  "alter_existing_manifest": false,
+  "registered_at": "2026-11-01T07:39:07Z"
 }

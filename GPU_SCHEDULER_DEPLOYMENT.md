@@ -34,3 +34,5 @@ protocol-v2.md是执行器读取的协议文件，与GPU_SCHEDULER_PROTOCOL.md�
 中文帮助已同步提交入队与阶段启动的区别、项目/全局暂停范围及STARTING许可边界。36个公开操作的表格/JSON共72项渲染检查、8组实际CLI帮助检查通过。仅更新帮助与发布SHA，不重启协调器或实验；当前帮助清单见releases/help-clarification-source-manifest.json（Git仓库），服务器发布证据acceptance/executor-release-help-clarified.json。
 
 submission_version类型校验修复：控制入口安装ugs_manifest_validation_v1.py，validate与幂等键查询统一拒绝非空字符串以外的值。4项CPU回归（含18组非法类型/操作组合）和2项生产CLI拒绝检查通过，未新增job，既有清单SHA、协调器与并发设置保持。冻结core/verifier/protocol不变，项目无需重新提交或修改PIN。发布证据acceptance/executor-release-manifest-validation-v1.json；新源码SHA见Git仓库releases/manifest-validation-v1-source-manifest.json。
+
+2026-11-01 15:39（台北），按用户明确授权新增可选verifier入口candidates/preload_v3_2/verify_launch_v3_2.py及preload.py并登记发布PIN/隔离CPU证据。candidate_revision=ugs-preload-v3.2-candidate1，基础runtime_release仍ugs-exec-v3.1；旧core/verifier/protocol不变。14项模拟CPU及8项真实Linux隔离CPU协议测试通过，GPU接口验收待新项目有界实验，不能冒称GPU通过。服务未重启、容量未改。登记证据acceptance/preload-v32-production-registration.json，详细说明及SHA见仓库candidates/preload_v3_2/REVIEW.md、source-manifest.json。
