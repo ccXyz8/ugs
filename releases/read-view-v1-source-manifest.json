@@ -1,0 +1,15 @@
+{
+  "change": "One verified snapshot per query and rehashed validated-prefix acceleration for read-only lists",
+  "deployed": true,
+  "cpu_tests": 30,
+  "query_only": true,
+  "daemon_restarted": false,
+  "dispatch_integrity_and_gpu_rules_changed": false,
+  "evidence": "acceptance/read-performance-v1",
+  "files": {
+    "source/ugs_cli_control_v2.py": "7074db6309c1de7debad0fa62ff4c4ac013b20655a160b23fb7ad2d47d924c17",
+    "source/ugs_read_view_v1.py": "b8afe203d34f3b05760e32fc664a82216a901186e317ef43406f1d8c9412675a",
+    "source/test_read_view_v1.py": "889575cdb16c7b32e720c590c84043dfd9427f25a1dc14ff5d878eaa89d834df",
+    "source/test_pagination_v1.py": "b3310a2eb7081cd6ceffb662e6914c3673692908f1fcc44df36b00af30d07fb3"
+  }
+}

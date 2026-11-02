@@ -37,3 +37,7 @@ id_ed25519*
 *.ckpt
 *.pt
 *.pth
+
+# Derived read-only query acceleration metadata
+/read-view-prefix-v1.json
+/.read-view-*

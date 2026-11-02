@@ -1,0 +1,86 @@
+{
+  "scope": "gpu07 local CLI wall clock, three samples per command; no SSH time included",
+  "baseline": {
+    "results": {
+      "experiment list": {
+        "samples": [
+          4.966661067679524,
+          5.871769438497722,
+          5.767389063723385
+        ],
+        "median": 5.767389063723385
+      },
+      "scheduler status": {
+        "samples": [
+          5.501522671431303,
+          5.783308911137283,
+          6.014376582577825
+        ],
+        "median": 5.783308911137283
+      }
+    },
+    "journal_bytes": 64687217
+  },
+  "single_read": {
+    "single_read / experiment list": {
+      "samples": [
+        1.8585423771291971,
+        2.065395406447351,
+        1.2244833139702678
+      ],
+      "median": 1.8585423771291971
+    },
+    "single_read / scheduler status": {
+      "samples": [
+        2.248607845045626,
+        2.003984426148236,
+        1.4143282566219568
+      ],
+      "median": 2.003984426148236
+    },
+    "verified_prefix_cache / experiment list": {
+      "samples": [
+        1.9938262896612287,
+        0.7071291208267212,
+        1.2272955924272537
+      ],
+      "median": 1.2272955924272537
+    },
+    "verified_prefix_cache / scheduler status": {
+      "samples": [
+        0.8371871346607804,
+        1.0024633957073092,
+        0.9839484645053744
+      ],
+      "median": 0.9839484645053744
+    }
+  },
+  "deployed": {
+    "passed": true,
+    "results": {
+      "experiment list": {
+        "samples": [
+          0.8285529771819711,
+          1.0180139625445008,
+          1.6033795541152358
+        ],
+        "median": 1.0180139625445008
+      },
+      "scheduler status": {
+        "samples": [
+          0.8928755717352033,
+          0.9290656056255102,
+          0.9541680831462145
+        ],
+        "median": 0.9290656056255102
+      }
+    },
+    "physical_snapshot_reads_per_query": 1,
+    "pagination_unchanged": true,
+    "daemon_unchanged": true,
+    "journal_bytes": 66027635,
+    "cache_bytes": 235
+  },
+  "cpu_tests": 30,
+  "frozen_core_and_gpu_rules_changed": false
+}

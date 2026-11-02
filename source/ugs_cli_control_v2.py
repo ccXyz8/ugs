@@ -8,6 +8,7 @@ preflight.install()
 import ugs_maintenance_v1_1 as maintenance
 import ugs_help_zh_v3 as help_zh
 import ugs_pagination_v1 as pagination
+import ugs_read_view_v1 as read_view
 
 def value(v):
     if v is None:return "-"
@@ -144,7 +145,7 @@ def render(data,args):
         table([k.upper() for k in fields],[[r.get(k) for k in fields] for r in data])
     else:table(["FIELD","VALUE"],flatten(data))
 
-def main():
+def _main():
     raw=sys.argv[1:];as_json="--json" in raw;args=[x for x in raw if x!="--json"]
     if not args or any(x in args for x in ("-h","--help")) or args[0]=="help" or (len(args)==1 and args[0] in help_zh.DATA["catalog"]):
         return help_zh.show(args,table,as_json)
@@ -175,4 +176,11 @@ def main():
             render(data,args)
             if page_info:print("\n"+pagination.footer(page_info))
     return 0
+def main():
+    args=[x for x in sys.argv[1:] if x!="--json"]
+    if any(x in args for x in ("-h","--help")):
+        return _main()
+    with read_view.session(core,args):
+        return _main()
+
 if __name__=="__main__":sys.exit(main())

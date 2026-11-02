@@ -62,7 +62,7 @@ class PaginationTests(unittest.TestCase):
         def fake_cli():
             calls.append(sys.argv[1:]);print(json.dumps({'jobs':rows(31),'active':[],'version':'fixture'} if sys.argv[1]=='scheduler' else rows(31)))
         core.cli=fake_cli
-        mocks={'ugs_exec_v3_1':core,'ugs_control_v2':types.SimpleNamespace(install=lambda:None),
+        mocks={'ugs_read_view_v1':types.SimpleNamespace(session=lambda *a,**k:contextlib.nullcontext()),'ugs_exec_v3_1':core,'ugs_control_v2':types.SimpleNamespace(install=lambda:None),
             'ugs_preflight_v1':types.SimpleNamespace(install=lambda:None,enrich_output=lambda data,args:data),
             'ugs_maintenance_v1_1':types.SimpleNamespace()}
         spec=importlib.util.spec_from_file_location('test_public_cli',Path(__file__).with_name('ugs_cli_control_v2.py'))
