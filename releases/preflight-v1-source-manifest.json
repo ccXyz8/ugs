@@ -14,5 +14,8 @@
     "source/ugs_preflight_v1.py": "82819ddf1fa67d99652eb57f87630ac2b398641bc4cdbc4299db62d30ae7901b",
     "source/test_preflight_v1.py": "e6f98e3321778012860ab9b0167b9db1bf40bc854c55d774ed8984ee871f3de8",
     "source/ugs_v1.py": "961d5d567579c5aec9762122d5fa6e7d899269eb00cdef02dff9d3b6e5d86a9d"
-  }
+  },
+  "live_cli_checks": 5,
+  "deployed": true,
+  "deployment_evidence": "acceptance/preflight-v1-activation/result.json"
 }

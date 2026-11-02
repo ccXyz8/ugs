@@ -36,3 +36,11 @@ protocol-v2.md是执行器读取的协议文件，与GPU_SCHEDULER_PROTOCOL.md�
 submission_version类型校验修复：控制入口安装ugs_manifest_validation_v1.py，validate与幂等键查询统一拒绝非空字符串以外的值。4项CPU回归（含18组非法类型/操作组合）和2项生产CLI拒绝检查通过，未新增job，既有清单SHA、协调器与并发设置保持。冻结core/verifier/protocol不变，项目无需重新提交或修改PIN。发布证据acceptance/executor-release-manifest-validation-v1.json；新源码SHA见Git仓库releases/manifest-validation-v1-source-manifest.json。
 
 2026-11-01 15:39（台北），按用户明确授权新增可选verifier入口candidates/preload_v3_2/verify_launch_v3_2.py及preload.py并登记发布PIN/隔离CPU证据。candidate_revision=ugs-preload-v3.2-candidate1，基础runtime_release仍ugs-exec-v3.1；旧core/verifier/protocol不变。14项模拟CPU及8项真实Linux隔离CPU协议测试通过，GPU接口验收待新项目有界实验，不能冒称GPU通过。服务未重启、容量未改。登记证据acceptance/preload-v32-production-registration.json，详细说明及SHA见仓库candidates/preload_v3_2/REVIEW.md、source-manifest.json。
+
+## 2026-11-02新提交预检启用
+
+公共CLI及旧兼容入口现加载`source/ugs_preflight_v1.py`，只约束两个项目的新提交和未启动阶段修改，不追溯迁移已注册清单。新增七项CPU证据、完整stage SHA、已验收v3.2 verifier的双文件PIN，以及项目内有界失败记录。具体格式见适配合同。
+
+验收：25项隔离CPU回归、5项隔离CLI检查、5项线上CLI检查；线上确认修改最终argv后validate拒绝，list表格、JSON、show和中文帮助可用。激活在状态锁内更新公共CLI及发布SHA，确认队列、活动分配、策略和协调器身份不变；没有重启协调器或实验。
+
+服务器验收索引：`acceptance/preflight-v1-activation/result.json`及`live-cli-result.json`。旧执行器、GPU空闲规则、最终快照时限及原始source-manifest.json保持不变。新项目模板的CPU验收不替代各自正式实验所需的GPU接口和门禁证据。
