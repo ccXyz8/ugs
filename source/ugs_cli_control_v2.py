@@ -1,8 +1,10 @@
-"""Public CLI using control-v2 lifecycle rules and the frozen v3.1 verifier contract."""
+"""Public CLI using control-v2 lifecycle rules and accepted new-submission preflight."""
 import contextlib,io,json,shutil,sys,unicodedata,subprocess
 import ugs_exec_v3_1 as core
 import ugs_control_v2 as control
 control.install()
+import ugs_preflight_v1 as preflight
+preflight.install()
 import ugs_maintenance_v1_1 as maintenance
 import ugs_help_zh_v3 as help_zh
 
@@ -87,9 +89,9 @@ def physical_ids(gpus):
 
 def jobs(rows):
     allocated=allocations()
-    table(["JOB ID","PROJECT","EXPERIMENT","STATUS","STAGE","GPU ID","PAUSED","QUEUE"],
+    table(["JOB ID","PROJECT","EXPERIMENT","STATUS","STAGE","GPU ID","PAUSED","QUEUE","FAILURE"],
           [[j.get(k) for k in ("job_id","project_id","experiment_id","status","stage_id")]+
-           [physical_ids(allocated.get(j.get("job_id"),[])),j.get("paused"),j.get("queue_seq")] for j in rows])
+           [physical_ids(allocated.get(j.get("job_id"),[])),j.get("paused"),j.get("queue_seq"),j.get("failure_reason")] for j in rows])
 
 def render(data,args):
     obj=args[0] if args else "";action=args[1] if len(args)>1 else ""
@@ -121,7 +123,7 @@ def render(data,args):
     elif obj=="resource" and action=="reservations":
         table(["GPU ID","GPU UUID","REASON","CREATED AT"],[[physical_ids([v["gpu_uuid"]]),v["gpu_uuid"],v.get("reason"),v.get("created_at")] for v in data])
     elif obj=="experiment" and action=="show":
-        fields=["job_id","project_id","experiment_id","queue_seq","run_id","status","paused","stage_index","manifest_sha256","gpu_release_verified_at","error","terminal_reason"]
+        fields=["job_id","project_id","experiment_id","queue_seq","run_id","status","paused","stage_index","manifest_sha256","gpu_release_verified_at","error","terminal_reason","failure_record_status","failure_category","failure_phase","failure_reason","failure_message","failure_evidence_path","failure_log_path","failure_record_error"]
         table(["FIELD","VALUE"],[(k,data.get(k)) for k in fields]+[("gpu_ids",physical_ids(allocations().get(data["job_id"],[]))),("gpu_uuids",allocations().get(data["job_id"],[]))])
         stages=data.get("manifest",{}).get("stages",[])
         print("\nSTAGES")
@@ -162,7 +164,9 @@ def main():
         else:print("ugs: "+str(e),file=sys.stderr)
         return 2
     text=output.getvalue()
-    if as_json:print(text,end="")
-    elif text.strip():render(json.loads(text),args)
+    if text.strip():
+        data=preflight.enrich_output(json.loads(text),args)
+        if as_json:print(json.dumps(data,ensure_ascii=False))
+        else:render(data,args)
     return 0
 if __name__=="__main__":sys.exit(main())

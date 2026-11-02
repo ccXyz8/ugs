@@ -17,6 +17,8 @@ COMMON=[
 ["项目自助提交","依次执行project register、experiment validate、experiment submit（各带--file FILE）"]
 ]
 NOTES=[
+"两个接入项目的新提交须通过七项CPU预检并绑定已验收v3.2 verifier；validate与submit均检查，不合格不创建job。旧注册作业不迁移。",
+"experiment list增加FAILURE原因；show显示失败阶段、分类、消息与项目证据路径。LEGACY_NO_STRUCTURED_RECORD表示旧记录缺少细分证据，UNVERIFIED表示证据未能核实。",
 "J是UGS分配的job_id（如job-000004）；P是project_id；STAGE是清单中的stage_id。",
 "FILE是服务器上本项目文件的绝对路径；SHA是当前manifest_sha256；IDS如1,2或完整GPU UUID。",
 "命令语法里的[]表示可选，|或“或”表示择一；不要把这些符号、J/P/FILE等占位符原样执行。",

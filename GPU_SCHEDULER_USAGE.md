@@ -180,3 +180,9 @@ maintenance stop仅停止日志维护，不停止协调器或实验；scheduler 
 详见[控制补充协议](GPU_SCHEDULER_CONTROL_POLICY.md)：experiment pause/resume已删除，运行阶段继续执行或stop终止。单实验job-id即可，--project可选，显式错项目拒绝；表格语法中的[J/P等]为占位说明，实际指令不输入方括号。
 
 正常结束、失败、取消都须确认本实验全部后代及GPU上下文消失；无外部进程的卡须回已核实驱动基础显存。STOPPING表示清理尚未完成，不是保留显存的暂停。scheduler pause --stop-running清理后保留服务；scheduler stop --stop-running清理后退出服务。普通scheduler/project pause只暂停后续派发，运行阶段继续。
+
+## 提交前检查与失败定位
+
+两个项目的新提交须通过[适配器合同](GPU_SCHEDULER_ADAPTER_CONTRACT.md)中的七项CPU预检，统一绑定已验收v3.2 verifier及10/20秒调用超时。先运行`ugs experiment validate --file FILE`，再submit；检查不合格不会创建job。已有注册清单不迁移。
+
+`ugs experiment list`用FAILURE列显示原因，`ugs experiment show J`查看分类、阶段、完整消息、证据和项目日志路径；脚本可加`--json`读取完整有界记录。旧失败未记录的细节不会补造，证据不完整会明确标注。不会因此自动重试失败实验。

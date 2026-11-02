@@ -31,3 +31,29 @@ initial登记短竞态允许同adapter PID/nonce内按code3最多10秒有界pend
 ## submission_version类型约束
 
 submission_version必须是非空字符串，例如JSON中的`"submission_version": "1"`；整数`1`、布尔值、null、数组、对象、空串或纯空白均拒绝。validate与submit/update/amend/retry的幂等键路径使用同一类型检查，返回明确字段错误，不自动转换类型。已有合法字符串、清单SHA、job-id和幂等键保持不变；失败提交不创建实验。
+
+## 新提交预检与失败证据（2026-11-02补充）
+
+本节替代上文两个接入项目新提交所用旧verifier的默认说明。既有注册作业及其PIN保持冻结，同内容幂等查询不要求迁移。新提交的ms-swift-main、time-r1每个阶段必须通过`ugs-preflight-v1`，validate与submit使用同一检查；不合格不创建job。
+
+统一使用服务目录`candidates/preload_v3_2/verify_launch_v3_2.py`，SHA256为`26e5e077924f67837c01bf0cee38b34f8bd331661dea9c48b3dd53560b5682a5`；同目录`preload.py`为`6ee2d1354e9af32a430ce1d18b5ddef8b5a1344216608d0797e33f4a8c36212f`。candidate_revision为`ugs-preload-v3.2-candidate1`；基础运行版本仍为ugs-exec-v3.1。initial子调用超时10秒，preload子调用超时20秒；最终GPU快照2秒时效及共同连续五分钟空闲规则不变。调用必须同时检查退出码、allowed、preload及全部授权身份。拒绝或超时不得初始化CUDA、重复消费许可或自动重试实验。
+
+每阶段CPU报告增加preflight对象：contract、stage_id、stage_sha256、verifier（path/sha256/dependency_path/dependency_sha256/candidate_revision/initial_timeout_seconds/preload_timeout_seconds）、failure_record和checks。checks包含以下七项，每项提供name、passed=true及evidence的path/sha256，证据必须来自实际CPU检查，不能只手填通过声明。CPU报告source_sha256额外绑定上述两个服务文件；服务文件不加入项目allowed_roots。
+
+| 检查名 | 实际检查内容 |
+|---|---|
+| final_argv_parse | 使用最终入口和参数解析，区分torchrun参数与模型脚本参数 |
+| generation_uuid_rank | generation按字符串传递，GPU UUID/物理号及rank映射正确 |
+| authorization_response | initial/preload超时、拒绝、异常输出均停止，保留响应 |
+| model_interface | 实际模型配置、输出结构和词表/形状约定一致 |
+| storage_preflight | 各项目输出目录可写、容量满足要求；inode未知采用有限写探针，不误报耗尽，也不声称证明配额充足 |
+| launch_boundary | 授权完成前不得创建CUDA worker；无自动重试 |
+| failure_record | 故障注入验证结构化记录及原始日志引用 |
+
+stage.failure_record与preflight.failure_record完全一致，内容为contract=ugs-failure-v1及path；path须为本阶段output_dir内尚不存在的文件，其父目录已存在。运行失败时适配器在退出前原子写入不超过64KiB的JSON：contract、job_id、run_id、stage_id、generation、stage_nonce、manifest_sha256、automatic_retry=false、phase、category、reason、message、exit_code，以及verifier响应和error_log_paths。message最多8192字符，stdout/stderr保留有界尾部，完整日志仍留项目目录。记录失败不得遮蔽原始异常；无法归因时使用UNKNOWN，不把所有失败推断成参数错误或显存不足。
+
+`ugs experiment list`的FAILURE列展示原因；`ugs experiment show J`展示分类、阶段、消息、证据及日志路径。CLI只读取有界记录并核对job/run/清单/generation/nonce身份，不修改历史作业。旧作业缺少结构化证据显示LEGACY_NO_STRUCTURED_RECORD；文件缺失、损坏或身份不匹配显示UNVERIFIED并保留调度器原始错误。进程被SIGKILL时适配器可能来不及写记录，不能保证每次都有细分原因。
+
+verifier响应超过失败记录64KiB上限时，完整响应单独保存项目目录，以oversized_response/full_json_path/SHA/bytes引用，并记录ADAPTER_CONTRACT/VERIFIER_RESPONSE_TOO_LARGE后拒绝启动，不截断JSON后声称完整。initial按实际返回字段核对基础运行版本及身份，候选版本由源码PIN确认；preload还必须核对candidate_revision。
+
+stage_sha256绑定完整最终stage对象：SHA256(json.dumps(stage, sort_keys=True, separators=(",", ":")).encode())，ensure_ascii使用默认True。变更argv、cwd、资源档或其他阶段字段后必须重新运行预检，不得复用旧报告。

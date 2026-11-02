@@ -1,0 +1,18 @@
+{
+  "change": "Require seven pinned CPU checks and accepted verifier for new submissions; bounded identity-checked failure views",
+  "runtime_release": "ugs-exec-v3.1",
+  "preflight_contract": "ugs-preflight-v1",
+  "failure_contract": "ugs-failure-v1",
+  "cpu_regression_tests": 25,
+  "isolated_cli_checks": 5,
+  "existing_jobs_migrated": false,
+  "automatic_retry": false,
+  "gpu_idle_rules_changed": false,
+  "files": {
+    "source/ugs_cli_control_v2.py": "d2dbe1d7e7ba9395f192fba903b273581830bece00aa6b9e64d63f294f00f73d",
+    "source/ugs_help_zh_v3.py": "9ec8d7abfbc5049da831a42f93ff8d032bc480a630558388afaea9548ad41423",
+    "source/ugs_preflight_v1.py": "82819ddf1fa67d99652eb57f87630ac2b398641bc4cdbc4299db62d30ae7901b",
+    "source/test_preflight_v1.py": "e6f98e3321778012860ab9b0167b9db1bf40bc854c55d774ed8984ee871f3de8",
+    "source/ugs_v1.py": "961d5d567579c5aec9762122d5fa6e7d899269eb00cdef02dff9d3b6e5d86a9d"
+  }
+}
