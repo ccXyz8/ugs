@@ -1,0 +1,21 @@
+{
+  "change": "Newest-first public job pagination, fixed 15 rows per page",
+  "page_size": 15,
+  "default_page": 1,
+  "commands": [
+    "experiment list",
+    "scheduler status",
+    "scheduler get"
+  ],
+  "json_structure_preserved": true,
+  "cpu_tests": 10,
+  "live_checks_passed": true,
+  "daemon_restarted": false,
+  "scheduling_changed": false,
+  "files": {
+    "source/ugs_cli_control_v2.py": "be2ff12572efb7f603a882e15928f92bb87bece350f6305108e140d14c4df99d",
+    "source/ugs_help_zh_v3.py": "82906fca7ad0c3ff7040b65daa35bb26d9f8e94aea3446046f92f00d385033fc",
+    "source/ugs_pagination_v1.py": "2641c0b9c3af8b08e3aa1c4e772c08972cb9138946ba43c47ab91423ad1f98ff",
+    "source/test_pagination_v1.py": "8ecc76dfc81b68f66b15f6801ccef92cac78508f45257f4ff392956c4dbcb5cb"
+  }
+}

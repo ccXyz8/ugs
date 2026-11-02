@@ -186,3 +186,16 @@ maintenance stop仅停止日志维护，不停止协调器或实验；scheduler 
 两个项目的新提交须通过[适配器合同](GPU_SCHEDULER_ADAPTER_CONTRACT.md)中的七项CPU预检，统一绑定已验收v3.2 verifier及10/20秒调用超时。先运行`ugs experiment validate --file FILE`，再submit；检查不合格不会创建job。已有注册清单不迁移。
 
 `ugs experiment list`用FAILURE列显示原因，`ugs experiment show J`查看分类、阶段、完整消息、证据和项目日志路径；脚本可加`--json`读取完整有界记录。旧失败未记录的细节不会补造，证据不完整会明确标注。不会因此自动重试失败实验。
+
+## 实验列表分页
+
+`ugs experiment list`与`ugs scheduler status`（含别名`get`）默认仅显示最新15个job，按注册job-id从新到旧排序，不改变真实派发顺序。`--page N`或`--page=N`选择页码，从1开始；默认与`--page 1`完全相同。项目和状态筛选先执行，再对筛选结果分页。越界页返回空列表；空队列显示第1页、共0个实验。
+
+```bash
+ugs experiment list
+ugs experiment list --page 2
+ugs experiment list --project time-r1 --status FAILED --page 1
+ugs scheduler status --page 2
+```
+
+表格页尾显示当前页、总页数及实验总数。status的调度设置、活动数及ACTIVE EXPERIMENTS区不分页，仍展示全部活动实验。`--json`同样分页，experiment list仍为数组、scheduler status仍为原对象，仅jobs数组分页；自动化需按页读取，读到空页结束。页码基于每次查询的实时列表，新提交可能使跨次查询的页边界移动。非正整数、缺失或重复页码会拒绝。

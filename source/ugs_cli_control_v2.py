@@ -7,6 +7,7 @@ import ugs_preflight_v1 as preflight
 preflight.install()
 import ugs_maintenance_v1_1 as maintenance
 import ugs_help_zh_v3 as help_zh
+import ugs_pagination_v1 as pagination
 
 def value(v):
     if v is None:return "-"
@@ -151,6 +152,8 @@ def main():
     if args and args[0]=="internal":return core.cli()
     output=io.StringIO()
     try:
+        args,page=pagination.parse_page(args)
+        sys.argv=[sys.argv[0]]+args
         with contextlib.redirect_stdout(output):
             if args and args[0]=="maintenance":maintenance.cli(args[1:])
             else:core.cli()
@@ -165,8 +168,11 @@ def main():
         return 2
     text=output.getvalue()
     if text.strip():
-        data=preflight.enrich_output(json.loads(text),args)
+        data,page_info=pagination.paginate(json.loads(text),args,page)
+        data=preflight.enrich_output(data,args)
         if as_json:print(json.dumps(data,ensure_ascii=False))
-        else:render(data,args)
+        else:
+            render(data,args)
+            if page_info:print("\n"+pagination.footer(page_info))
     return 0
 if __name__=="__main__":sys.exit(main())
