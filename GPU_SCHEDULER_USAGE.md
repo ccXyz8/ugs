@@ -1,5 +1,8 @@
 # UGS 统一实验管理器使用说明
 
+> 2026-11-12现行部署：服务器旧source/candidates执行代码已归档删除；只用公共ugs入口，原生GPU index、每30秒监测、无空闲等待、单一新verifier PIN。详见[原生index部署](GPU_NATIVE_INDEX_DEPLOYMENT.md)。本说明替代旧路径/UUID/旧verifier兼容条款。
+
+
 > 2026-11-12最新规则：每30秒监测，取消连续空闲等待和累计采样点；整组资源满足即可进入派发，进程/健康/基线/分配/明确预约及启动前双复查保持。旧verifier未迁移阶段明确阻塞。见[即时准入部署](GPU_CURRENT_ADMISSION_DEPLOYMENT.md)。
 
 > 2026-11-09派发时序修复已上线，公开命令不变。启动前阻塞可在 `experiment show/list` 和 `scheduler status` 查看 `DISPATCH_BLOCKED` 原因；QUEUED不等于实验执行失败。相同原因去重记录，不能通过重复提交解决。GPU准入及2秒快照有效期保持，见[派发时序部署](GPU_DISPATCH_TIMING_DEPLOYMENT.md)。

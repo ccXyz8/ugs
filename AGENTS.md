@@ -1,5 +1,8 @@
 # UGS 仓库协作规则
 
+> 2026-11-12现行部署：服务器旧source/candidates执行代码已归档删除；只用公共ugs入口，原生GPU index、每30秒监测、无空闲等待、单一新verifier PIN。详见[原生index部署](GPU_NATIVE_INDEX_DEPLOYMENT.md)。本说明替代旧路径/UUID/旧verifier兼容条款。
+
+
 - 2026-11-12用户最新准入规则已上线：每30秒监测，idle_seconds=0；不累计连续空闲时长或采样点，最新完整有效观察满足整组资源表即可进入派发。35秒陈旧上限、5秒采集上限、启动两次相隔2秒复查、2秒最终快照及进程/健康/显存基线/明确预约保持。旧verifier未迁移阶段显示VERIFIER_MIGRATION_REQUIRED，真实CPU验收后公开update，活动阶段不热改。详见[即时准入部署](GPU_CURRENT_ADMISSION_DEPLOYMENT.md)，替代下方及旧协议对应连续空闲条款。
 
 - 2026-11-09派发时序修复已上线：慢校验先于最终GPU复查，2秒快照有效期和全部GPU准入规则保持；重复启动前阻塞去重并显示原因。公共入口及验收见[派发时序部署](GPU_DISPATCH_TIMING_DEPLOYMENT.md)。项目无需重提或修改冻结PIN。
