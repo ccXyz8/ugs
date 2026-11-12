@@ -1,10 +1,14 @@
 # UGS 统一实验管理器使用说明
 
+> 2026-11-12最新规则：每30秒监测，取消连续空闲等待和累计采样点；整组资源满足即可进入派发，进程/健康/基线/分配/明确预约及启动前双复查保持。旧verifier未迁移阶段明确阻塞。见[即时准入部署](GPU_CURRENT_ADMISSION_DEPLOYMENT.md)。
+
+> 2026-11-09派发时序修复已上线，公开命令不变。启动前阻塞可在 `experiment show/list` 和 `scheduler status` 查看 `DISPATCH_BLOCKED` 原因；QUEUED不等于实验执行失败。相同原因去重记录，不能通过重复提交解决。GPU准入及2秒快照有效期保持，见[派发时序部署](GPU_DISPATCH_TIMING_DEPLOYMENT.md)。
+
 当前阶段接口：ugs-exec-v3.1；控制扩展ugs-control-v2；协议global-gpu-scheduler-v2.0。实际上线及验收证据见GPU_SCHEDULER_DEPLOYMENT.md。只通过既有SSH操作gpu07，不开新服务端口，不使用Slurm。
 
 ## 登录与命令入口
 
-在Mac终端执行 ssh -o BatchMode=yes a100，按项目规则核实admin身份（who、pwd、ls、whoami、hostname），再执行 ssh -o BatchMode=yes gpu07；核实gpu07身份及GPU状态后，在当前远程shell设置：
+A100的admin仅作既有SSH链路中转，不在admin执行检查或任务。通过既有链路直接进入gpu07后，核实实际主机为gpu07及账户、目录，再执行UGS；所有帮助、查询、CPU预检和管理操作也只在gpu07执行。在gpu07的当前远程shell可设置：
 
     alias ugs=/public/home/kzhang19/kezhang/cc/global-gpu-scheduler/ugs
 
@@ -101,7 +105,7 @@ max_experiment只控制实验链容量：默认1，0禁止接纳新链但不终�
 | ugs resource status | 最近GPU观察、UUID分配及当前容量；历史观察不代替启动时复查 |
 | ugs resource reserve IDS --reason TEXT | 登记已知预约避让，不占显存、不停止实验 |
 | ugs resource reservations | 表格查看当前避让登记 |
-| ugs resource release IDS | 解除避让，重新五分钟观察 |
+| ugs resource release IDS | 解除明确预约，取得新有效观察后可参与分配 |
 | ugs maintenance status | 维护进程、阈值、大小及最后结果/错误 |
 | ugs maintenance run --dry-run | 预览清理 |
 | ugs maintenance run | 按阈值维护UGS日志 |
@@ -139,7 +143,7 @@ internal serve/guardian是执行器内部入口，只允许服务托管路径调
 
 ## 空闲观察与已知预约避让
 
-resource status显示物理GPU ID、STATE、IDLE s、显存、利用率、健康、进程和受管job。WARMING表示正在积累共同五分钟记录，QUALIFIED表示当前观察资格；已分配/预约/配置阻塞仍可能阻止启动。PROCESS_PRESENT、BASELINE_UNREVIEWED、HEALTH_UNKNOWN_OR_BAD等为阻塞原因。GPU状态未知时不会猜为空闲。
+resource status显示物理GPU ID、STATE、IDLE s、显存、利用率、健康、进程和受管job。当前模式不累计空闲时长或采样点；QUALIFIED表示最新一次完整有效观察合格；已分配/预约/配置阻塞仍可能阻止启动。PROCESS_PRESENT、BASELINE_UNREVIEWED、HEALTH_UNKNOWN_OR_BAD等为阻塞原因。GPU状态未知时不会猜为空闲。
 
 预约来自明确告知或已有预约信息，UGS无法自动看出他人的未来计划。仅用户/授权管理会话登记已知需求：
 
@@ -147,7 +151,7 @@ resource status显示物理GPU ID、STATE、IDLE s、显存、利用率、健康
     ugs resource reservations
     ugs resource release 1,2
 
-编号为示例，也接受逗号分隔完整UUID。仅让UGS避让，不占显存、不拦截他人、不驱逐当前实验；已被UGS分配的卡拒绝新增预约。登记不会自动到期，release后重新五分钟观察。30秒轮询仍可能漏掉采样间短进程，最后复查不能保证他人未来不启动。
+编号为示例，也接受逗号分隔完整UUID。仅让UGS避让，不占显存、不拦截他人、不驱逐当前实验；已被UGS分配的卡拒绝新增预约。登记不会自动到期，release后须取得新的有效观察，无连续空闲等待。30秒轮询仍可能漏掉采样间短进程，最后复查不能保证他人未来不启动。
 
 ## UGS日志维护
 
@@ -207,3 +211,13 @@ experiment list与scheduler status/get在一次调用内共用一份已验证快
 查询专用read-view-prefix-v1.json只保存已完整验证的日志前缀摘要、长度和修订信息，不保存job状态。每次仍重算前缀全部字节SHA，核验缓存元数据和末条记录，并逐条核验新增记录的SHA及连续revision。前缀变化、截断、轮转、缓存缺失或损坏时回退完整重放；损坏日志或不完整尾部拒绝查询，不返回旧缓存状态。缓存采用600权限、原子替换、拒绝符号或硬链接，正常文件小于4KiB；缓存写入失败不影响已通过校验的查询。
 
 缓存只服务上述只读视图，提交、派发、verifier和GPU观察继续使用原状态读写及完整性检查。首次读取或日志轮转后的完整校验可能较慢。不会缓存GPU准入判断，也不改变空闲时窗。
+
+## 更新、替换与队列优化（已生产启用）
+
+[修复操作方案](GPU_SCHEDULER_REPAIR_POLICY.md)定义自动选择未执行部分的update、保留项目内队位的replace及replacement查询/撤销。2026-11-02 23:38:57（台北）CLI与daemon已联合切换，现有ugs可使用新接口和中文帮助。详细调用与权限见GPU_SCHEDULER_PROJECT_STANDARD.md。
+
+- 2026-11-03用户将GPU连续空闲窗口调整为120秒、至少5点；旧PIN未迁移阶段保留300秒防止验证器不一致，新接口和当前部署见[两分钟窗口部署](GPU_IDLE_WINDOW_DEPLOYMENT.md)。30秒扫描、35秒漏采失效及启动两次相隔2秒复查保持。
+
+## 明确授权的阶段资源更新
+
+普通update继续冻结资源语义。用户明确要求变更无活动实验的未开始阶段资源时，使用 `ugs experiment update JOB --file FILE --expected-sha SHA --resource-authorization AUTH [--project P] [--dry-run]`。授权必须由获授权管理会话登记并绑定新旧SHA/精确后缀，不能自行制作免检声明。前缀、科学预算、产物和队位保持；指定GPU以资源档gpu_uuids约束，卡不合格则等待。详见[资源变更部署](GPU_RESOURCE_OVERRIDE_DEPLOYMENT.md)。

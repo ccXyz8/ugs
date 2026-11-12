@@ -1,5 +1,11 @@
 # UGS 源码快照与部署范围
 
+> 2026-11-12最新规则：每30秒监测，取消连续空闲等待和累计采样点；整组资源满足即可进入派发，进程/健康/基线/分配/明确预约及启动前双复查保持。旧verifier未迁移阶段明确阻塞。见[即时准入部署](GPU_CURRENT_ADMISSION_DEPLOYMENT.md)。
+
+> 最新入口（2026-11-09）：`candidates/dispatch/4e57ccf76fc1/ugs_dispatch_entry.py`。慢校验先于最终GPU复查，新增可见且去重的启动前阻塞证据；保留冻结文件及此前所有已验收扩展。见[派发时序部署](GPU_DISPATCH_TIMING_DEPLOYMENT.md)。
+
+> 2026-11-03时窗更新：用户将连续空闲要求降为120秒/至少5点。本文历史五分钟规则及旧verifier说明由[两分钟窗口部署](GPU_IDLE_WINDOW_DEPLOYMENT.md)对应条款替代；运行阶段不热改，未迁移旧PIN保留300秒保护。
+
 本仓库初始提交于2026-10-31导入已部署的ugs-exec-v3.1及中文帮助。SHA原件清单见[source-manifest.json](source-manifest.json)；此文件只记录源码与协议，不包含运行状态或生产发布许可。
 
 ## 当前执行路径
@@ -44,3 +50,23 @@ submission_version类型校验修复：控制入口安装ugs_manifest_validation
 验收：25项隔离CPU回归、5项隔离CLI检查、5项线上CLI检查；线上确认修改最终argv后validate拒绝，list表格、JSON、show和中文帮助可用。激活在状态锁内更新公共CLI及发布SHA，确认队列、活动分配、策略和协调器身份不变；没有重启协调器或实验。
 
 服务器验收索引：`acceptance/preflight-v1-activation/result.json`及`live-cli-result.json`。旧执行器、GPU空闲规则、最终快照时限及原始source-manifest.json保持不变。新项目模板的CPU验收不替代各自正式实验所需的GPU接口和门禁证据。
+
+## 2026-11-02 23:38:57（台北）repair-v1生产启用
+
+现有ugs已切换到candidates/repair_release/3061d40c3131/ugs_cli_repair_v1.py，CLI和daemon共同加载ugs_repair_v1.py。在无活动实验窗口暂停派发、停止旧协调器、登记发布SHA并启动新协调器，通过检查后恢复此前未暂停状态。保留36条实验记录及所有清单/队位，Time-R1仍34→35→36；没有重启实验、修改冻结核心/verifier/PIN或GPU规则。
+
+23项Linux CPU测试、7项线上查询/帮助、dry-run保持日志revision/清单/队位不变通过。CPU真实后代终止验收使用模拟GPU释放，不冒称新GPU科学实验验收。发布证据acceptance/repair-v1-production.json，SHA256=5adfab62901c85789858166e0ac5df68d5a5219cfada31365cbd0ecf4ab8207b。原启动入口/发布清单保留在生产切换审计中，不写入Git的实时状态。显存4–7MiB候选未随本次启用。
+
+## 2026-11-03 00:08:41（台北）显存范围与回退生产启用
+
+入口切换为candidates/memory_entry/b40388bc2608/ugs_memory_entry.py，保留repair-v1操作接口，统一安装memory_runtime。5张证据有效的已审4MiB卡配置ceiling=7，未审卡不放行；无进程收口>7触发全局exact4锁存及空闲窗口失效。六个原QUEUED job已通过项目CPU验收与公开CAS update迁移新验证器，未重启实验/重建job或改变队位。中央重跑job_validate及same_semantics通过，恢复prior pause=false。
+
+证据acceptance/memory-allowance-v1-production.json SHA256=7253875e0c74ef36d1acda3ed8914f47d3dffb22cf94e63c72b4fa707549f088；完整规则与三文件PIN见GPU_MEMORY_ALLOWANCE_DEPLOYMENT.md。另按已有64MiB阈值执行日志压缩，未改维护策略；8项CPU显存/时窗测试及2项未授权拒绝检查通过，未制造生产GPU故障测试回退。
+
+## 2026-11-03 21:49:05（台北）120秒窗口生产启用
+
+公共入口更新为candidates/idle_window/ad910adbc734/ugs_idle_entry.py。连续120秒/至少5点，扫描30秒、漏采上限35秒、启动两次2秒复查和显存回退保持。受控交接保留job43运行进程，未重启实验；job44/job53全链及job43未开始评估后缀已完成项目真实CPU预检与公开update。已恢复派发、max_experiment仍1。13项CPU边界测试、4项CLI检查及2项未授权拒绝通过。新PIN、旧阶段兼容及证据见[两分钟窗口部署](GPU_IDLE_WINDOW_DEPLOYMENT.md)。
+
+## 2026-11-05 15:53:09（台北）受控资源更新
+
+公共入口更新为candidates/resource_override/a31d2dcc3d5b/ugs_resource_entry.py。新增明确授权且绑定job/run/新旧SHA的无运行阶段后缀资源变更，以及gpu_uuids选卡与最终复查约束。普通update冻结保护保留。13项CPU测试、3项CLI检查、真实后缀准入及公开dry-run通过；无活动实验时更换协调器，所有job和全局policy/轮转保持，未暂停或重启实验。详见[资源变更部署](GPU_RESOURCE_OVERRIDE_DEPLOYMENT.md)。

@@ -1,5 +1,9 @@
 # UGS v3.1 项目适配与自助准入合同
 
+> 2026-11-12最新规则：每30秒监测，取消连续空闲等待和累计采样点；整组资源满足即可进入派发，进程/健康/基线/分配/明确预约及启动前双复查保持。旧verifier未迁移阶段明确阻塞。见[即时准入部署](GPU_CURRENT_ADMISSION_DEPLOYMENT.md)。
+
+> 2026-11-03时窗更新：用户将连续空闲要求降为120秒/至少5点。本文历史五分钟规则及旧verifier说明由[两分钟窗口部署](GPU_IDLE_WINDOW_DEPLOYMENT.md)对应条款替代；运行阶段不热改，未迁移旧PIN保留300秒保护。
+
 协议：global-gpu-scheduler-v2.0；项目合同ugs-stage-v2；当前服务目录/public/home/kzhang19/kezhang/cc/global-gpu-scheduler。部署SHA与状态见GPU_SCHEDULER_DEPLOYMENT.md；完整CLI见GPU_SCHEDULER_USAGE.md。
 
 项目register JSON保留project_id、project_root、allowed_roots、固定python、owner，adapter_contract为ugs-stage-v2；migration_evidence={path,sha256}指向本项目证据，包含old_dispatch_disabled=true、existing_jobs_reconciled=true及实际依据。注册不停止或重启已有实验。
@@ -57,3 +61,21 @@ stage.failure_record与preflight.failure_record完全一致，内容为contract=
 verifier响应超过失败记录64KiB上限时，完整响应单独保存项目目录，以oversized_response/full_json_path/SHA/bytes引用，并记录ADAPTER_CONTRACT/VERIFIER_RESPONSE_TOO_LARGE后拒绝启动，不截断JSON后声称完整。initial按实际返回字段核对基础运行版本及身份，候选版本由源码PIN确认；preload还必须核对candidate_revision。
 
 stage_sha256绑定完整最终stage对象：SHA256(json.dumps(stage, sort_keys=True, separators=(",", ":")).encode())，ensure_ascii使用默认True。变更argv、cwd、资源档或其他阶段字段后必须重新运行预检，不得复用旧报告。
+
+## 下一次新实验的显存来源诊断（2026-11-02）
+
+**当日使用限制更正，优先于本节后续原生跟踪说明：** 诊断v1持续ltrace只有磁盘限额，没有运行时间/事件限额，高频CUDA调用可导致严重开销；不得再用于新提交的长时GPU实验。未来新模板保留内部phase时间记录，显式trace-tool=none并重新冻结/验收；不以此声称采集了原生CUDA调用。原CPU假库验收与旧PIN不改写。现有作业不热改，停止须依授权走UGS整链回收，不单杀tracer或尝试未经验证的detach。后继有运行开销预算的原生方案待独立验收，详见[诊断使用限制](GPU_DIAGNOSTIC_USAGE.md)。
+
+仅接入未来新提交的独立清单。不得为启用诊断改写已注册清单、运行阶段、冻结源码或PIN；不得重跑训练来补日志。诊断不是新实验派发入口，仍由现有adapter完成initial/preload并遵守原启动时限、guardian及资源准入。诊断工具不得包裹verifier，不额外初始化CUDA或调用GPU reset。
+
+时间记录覆盖：每rank训练初始化（torch导入与set_device前后）、训练worker开始/结束、训练产物校验开始/结束、每个checkpoint导出子进程开始/结束、验证/测试worker开始/结束。使用UTC墙钟纳秒和monotonic_ns，附job_id/run_id/stage_id/generation、PID、rank及可见UUID；不用文件mtime推断时间。异常也写结束标记；SIGKILL/主机故障导致的缺失必须如实标注，不能补造成功结束。
+
+原生跟踪采用ltrace的精选函数入口断点（-x），覆盖动态符号查找调用；不采用仅Python profiler或仅strace记录冒充完整CUDA API。仅记录初始化、上下文与显存分配/释放，不跟踪每次算子/内核发射。原生跟踪仍可能受符号版本、静态链接及ptrace限制而漏记，未采集或截断必须显示，不得以空日志断言没有CUDA调用。跟踪会引入时延，验收须确认项目的超时与最终preload边界未被破坏。
+
+诊断留在各项目本阶段输出目录。下一条有限链最多8次原生跟踪，每次最多4MiB，合计最多32MiB；阶段时间事件共享64KiB预算，固定文件集合由新清单CPU预检核实。不得通过新建无限文件规避预算；与训练stdout/stderr分流，达到预算停止保存新增诊断但继续消费管道，不中止实验、不影响原始实验日志。记录截断、丢弃字节数与采集器错误。只启用下一条有限实验链，不默认为以后所有实验永久开启。项目历史诊断清理遵守项目删除规则，UGS维护不得自行删除项目文件；总量达到已约定预算前禁止自动扩展采集。
+
+验收及版本PIN由未来新模板绑定，未完成原生CPU假库、日志限额、返回码、输出隔离与项目预检之前不得声称生产诊断已启用。
+
+## memory verifier生产迁移
+
+新提交及本次六个未启动job工程修订统一绑定[显存策略部署](GPU_MEMORY_ALLOWANCE_DEPLOYMENT.md)中的verify_launch_memory.py、同目录preload.py和memory_runtime.py。该节取代上文旧verifier路径的默认选择，其余七项CPU检查、源码/最终stage SHA、许可身份与10/20秒预算不变。项目必须实际验收新调用，不手改已签报告；旧源码与历史清单保留。调度/加载前/收口使用同一显存规则，失败不自动重试。
