@@ -41,3 +41,5 @@ SHA256：`e415537a298accdae56cce0b3432fa42d3ed2d8ba568e647437d025014cc5b31`。
 实测：旧全量XML约3.66–6.08秒；原生选择采集观测0.19–3.13秒，仍可能有瞬时波动，超时按原规则拒绝。清理后list 0.803秒、status 0.553秒、help 0.155秒；不是延迟保证。
 
 日志保留：每1800秒维护，普通7天，资源64MiB、服务16MiB、journal触发64MiB/目标32MiB，归档30天且128MiB上限；只维护UGS白名单日志，不涉及项目输出。
+
+14:20台北最终核验：106替代训练已注册为 `job-000107`，状态QUEUED，阶段为train4000→evalabsolute；手动验证批次期间全局暂停保持。daemon、maintenance、release_ok均为真；旧目录可执行源码计数0。证据 `acceptance/standalone-final-check.json` SHA `cbd28bf2d18868a900e8de21086022141c443e60f66201daefc5598f179fb045`。尚未进入真实GPU initial/preload，不以CPU验收或注册成功代替GPU实验成功。
