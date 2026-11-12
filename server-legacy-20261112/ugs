@@ -1,0 +1,2 @@
+#!/bin/sh
+exec /public/home/kzhang19/kezhang/ycj/msswift_env/bin/python -B /public/home/kzhang19/kezhang/cc/global-gpu-scheduler/candidates/native_index/082cc13eb2dc/ugs_idle_v2_entry.py "$@"
