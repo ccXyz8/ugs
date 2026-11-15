@@ -1,5 +1,8 @@
 # UGS项目标准操作（2026-11-02）
 
+> 2026-11-15：STReasoner-more 已上线显式原路径复用，科学产物与控制回执均可复用原文件；不要求重跑新建exp或新的输出路径。同目录整链互斥，旧回执先归档再开始下一次写入。见[原路径复用](GPU_OUTPUT_REUSE_DEPLOYMENT.md)。
+
+
 > 2026-11-12现行部署：服务器旧source/candidates执行代码已归档删除；只用公共ugs入口，原生GPU index、每30秒监测、无空闲等待、单一新verifier PIN。详见[原生index部署](GPU_NATIVE_INDEX_DEPLOYMENT.md)。本说明替代旧路径/UUID/旧verifier兼容条款。
 
 
